@@ -1,21 +1,54 @@
 version: '3'
 
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-14}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
+  php:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./.env
+    # Comment out these volumes in production
     volumes:
-      - db-data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+      - ./:/srv:rw
+      # If you develop on Linux, comment out the following volumes to just use bind-mounted project directory from host
+      - /srv/var/
+      - /srv/var/cache/
+      - /srv/var/logs/
+      - /srv/var/sessions/
+
+  nginx:
+    build:
+      context: ./
+      dockerfile: docker/dev/nginx/Dockerfile
+    depends_on:
+      - php
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public:/srv/public:ro
+
+  db:
+    image: mariadb:10.7.3
+    environment:
+      MARIADB_ROOT_PASSWORD: 'root'
+      MARIADB_DATABASE: 'cosmostools'
+      MARIADB_USER: 'app'
+      MARIADB_PASSWORD: 'pw'
+    volumes:
+      - db-data:/var/lib/mysql/data:rw
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:3.2.6
+    volumes:
+      - redis-data:/var/lib/redis/data:rw
+    ports:
+      - "6379:6379"
 
 volumes:
-###> doctrine/doctrine-bundle ###
-  db-data:
-###< doctrine/doctrine-bundle ###
+  db-data: {}
+  redis-data: {}

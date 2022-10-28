@@ -1,0 +1,88 @@
+FROM composer:2.3
+FROM php:8-fpm-alpine
+
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+
+RUN apk add --no-cache --virtual .persistent-deps \
+		git \
+		icu-libs \
+		libpq \
+		rabbitmq-c-dev \
+		zlib \
+		autoconf \
+		automake \
+		g++ \
+		make \
+        nginx
+
+ENV APCU_VERSION 5.1.21
+RUN set -xe \
+	&& apk add --no-cache --virtual .build-deps \
+		$PHPIZE_DEPS \
+		icu-dev \
+		postgresql-dev \
+		zlib-dev \
+        libzip-dev \
+        pcre-dev \
+        zip \
+    && install-php-extensions \
+		intl \
+		pdo_mysql \
+		zip \
+		bcmath \
+		sockets \
+        amqp \
+        apcu \
+	&& apk del .build-deps
+
+COPY --from=0 /usr/bin/composer /usr/bin/composer
+
+COPY docker/prod/php/conf.d/php.ini /usr/local/etc/php/php.ini
+COPY docker/prod/php/conf.d/error_reporting.ini /usr/local/etc/php/conf.d/error_reporting.ini
+
+COPY docker/prod/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+COPY docker/prod/docker_entry.sh /usr/local/bin/docker_entry
+RUN chmod +x /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker_entry
+
+COPY docker/prod/nginx/conf.d/ /etc/nginx/http.d/
+RUN ls /etc/nginx/http.d
+
+WORKDIR /srv
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["docker_entry"]
+
+# https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+# Caprover sends environments as arguments, we need to convert them back to environments
+ARG APP_ENV=${APP_ENV}
+ENV APP_ENV=$APP_ENV
+ARG SENTRY_DSN=${SENTRY_DSN}
+ENV SENTRY_DSN=$SENTRY_DSN
+ARG LOGTAIL_KEY=${LOGTAIL_KEY}
+ENV LOGTAIL_KEY=$LOGTAIL_KEY
+ARG DATABASE_URL=${DATABASE_URL}
+ENV DATABASE_URL=$DATABASE_URL
+
+# Prevent the reinstallation of vendors at every changes in the source code
+COPY composer.json composer.lock ./
+RUN composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress \
+	&& composer clear-cache
+
+COPY . ./
+
+RUN mkdir -p var/cache var/logs var/sessions \
+	&& composer dump-autoload --classmap-authoritative --no-dev \
+	&& chown -R www-data:www-data var
+
+RUN rm -rf /etc/nginx/sites-enabled \
+    && mkdir -p /etc/nginx/sites-enabled
+
+RUN /srv/bin/console doctrine:migrations:migrate -n --env=prod
+
+RUN chmod -R 777 /srv/public \
+    && chmod -R 777 /srv/var/cache \
+    && chmod -R 777 /srv/var/logs
+
+EXPOSE 80
