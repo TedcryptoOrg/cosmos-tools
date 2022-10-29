@@ -30,4 +30,9 @@ final class Version20221029142322 extends AbstractMigration
         $this->addSql('DROP TABLE export_delegations_request');
         $this->addSql('DROP TABLE messenger_messages');
     }
+
+    public function isTransactional(): bool
+    {
+        return false;
+    }
 }

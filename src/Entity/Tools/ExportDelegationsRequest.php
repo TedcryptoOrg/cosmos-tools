@@ -49,9 +49,14 @@ class ExportDelegationsRequest
     private string $token;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $downloadLink;
+
+    /**
+     * @ORM\Column(name="error", type="string", length=255, nullable=true)
+     */
+    private ?string $error;
 
     /**
      * @ORM\Column(type="datetime")
@@ -92,12 +97,12 @@ class ExportDelegationsRequest
         return $this;
     }
 
-    public function getApiClient(): string
+    public function getApiClient(): ?string
     {
         return $this->apiClient;
     }
 
-    public function setApiClient(string $apiClient): ExportDelegationsRequest
+    public function setApiClient(?string $apiClient): ExportDelegationsRequest
     {
         $this->apiClient = $apiClient;
         return $this;
@@ -177,6 +182,17 @@ class ExportDelegationsRequest
     public function setUpdatedAt(\DateTime $updatedAt): ExportDelegationsRequest
     {
         $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getError(): ?string
+    {
+        return $this->error;
+    }
+
+    public function setError(?string $error)
+    {
+        $this->error = $error;
         return $this;
     }
 }
