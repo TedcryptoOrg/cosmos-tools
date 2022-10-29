@@ -16,24 +16,14 @@ RUN apk add --no-cache --virtual .persistent-deps \
         nginx
 
 ENV APCU_VERSION 5.1.21
-RUN set -xe \
-	&& apk add --no-cache --virtual .build-deps \
-		$PHPIZE_DEPS \
-		icu-dev \
-		postgresql-dev \
-		zlib-dev \
-        libzip-dev \
-        pcre-dev \
-        zip \
-    && install-php-extensions \
+RUN install-php-extensions \
 		intl \
 		pdo_mysql \
 		zip \
 		bcmath \
 		sockets \
         amqp \
-        apcu \
-	&& apk del .build-deps
+        apcu
 
 COPY --from=0 /usr/bin/composer /usr/bin/composer
 
