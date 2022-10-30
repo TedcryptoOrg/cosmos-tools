@@ -20,7 +20,7 @@ class ExportDelegationController extends BaseController
         if ($formResponse->isSuccessful()) {
             $this->addFlash('success', 'Delegations export request successfully created. You will receive an email to download the file when it is ready.');
 
-            return $this->redirectToRoute('app_cosmos_export_delegations');
+            return $this->redirectToRoute('app_cosmos_export_delegations_show', ['token' => $formResponse->getParameter('exportDelegationRequest')->getToken()]);
         }
 
         return $this->render('cosmos/export_delegations.html.twig', [
