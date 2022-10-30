@@ -36,27 +36,26 @@ class ExportDelegationRequestsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new ConsoleStyle($input, $output);
-        $requests = $this->exportDelegationsManager->findPendingRequests();
+        $request = $this->exportDelegationsManager->findOnePendingRequest();
+        if (!$request) {
+            $style->success('No pending request found');
 
-        $style->title(sprintf('Found %d pending requests', count($requests)));
-        foreach ($requests as $request) {
-            $style->section(sprintf('Processing request %d', $request->getId()));
-            $this->exportDelegationsManager->flagProcessing($request, ExportStatusEnum::PROCESSING);
+            return Command::SUCCESS;
+        }
 
-            try {
-                $style->writeln('Exporting delegations');
-                $exportLocation = $this->exportDelegationsManager->exportDelegations($request);
-                $style->writeln(sprintf('Exported delegations to %s', $exportLocation));
-                $style->writeln('Uploading delegations');
-                $downloadLink = $this->tedcryptoTransfer->upload($exportLocation, sprintf('%s_delegations%s', $request->getNetwork(), $request->getHeight() ? '_'.$request->getHeight() : ''));
-                $style->writeln(sprintf('Uploaded delegations to %s', $downloadLink));
-                $this->exportDelegationsManager->flagAsDone($request, $downloadLink);
-            } catch (\Exception $exception) {
-                $this->exportDelegationsManager->flagAsErrored($request, $exception->getMessage());
-                continue;
-            }
+        $style->section(sprintf('Processing request %d', $request->getId()));
+        $this->exportDelegationsManager->flagProcessing($request, ExportStatusEnum::PROCESSING);
 
-            $style->writeln('Request processed');
+        try {
+            $style->writeln('Exporting delegations');
+            $exportLocation = $this->exportDelegationsManager->exportDelegations($request);
+            $style->writeln(sprintf('Exported delegations to %s', $exportLocation));
+            $style->writeln('Uploading delegations');
+            $downloadLink = $this->tedcryptoTransfer->upload($exportLocation, sprintf('%s_delegations%s', $request->getNetwork(), $request->getHeight() ? '_'.$request->getHeight() : ''));
+            $style->writeln(sprintf('Uploaded delegations to %s', $downloadLink));
+            $this->exportDelegationsManager->flagAsDone($request, $downloadLink);
+        } catch (\Exception $exception) {
+            $this->exportDelegationsManager->flagAsErrored($request, $exception->getMessage());
         }
 
         return Command::SUCCESS;

@@ -39,12 +39,9 @@ class ExportDelegationsManager
         return $this->entityManager->getRepository(ExportDelegationsRequest::class)->find($id);
     }
 
-    /**
-     * @return ExportDelegationsRequest[]|array|object[]
-     */
-    public function findPendingRequests(): array
+    public function findOnePendingRequest(): ?ExportDelegationsRequest
     {
-        return $this->entityManager->getRepository(ExportDelegationsRequest::class)->findBy(['status' => ExportStatusEnum::PENDING]);
+        return $this->entityManager->getRepository(ExportDelegationsRequest::class)->findOneBy(['status' => ExportStatusEnum::PENDING]);
     }
 
     public function createRequest(array $formData): ExportDelegationsRequest
@@ -65,14 +62,20 @@ class ExportDelegationsManager
 
     public function flagProcessing(ExportDelegationsRequest $exportDelegationsRequest, string $status): void
     {
-        $exportDelegationsRequest->setStatus($status);
+        $exportDelegationsRequest
+            ->setStatus($status)
+            ->setUpdatedAt(new \DateTime())
+        ;
         $this->entityManager->flush();
     }
 
     public function flagAsDone(ExportDelegationsRequest $exportDelegationsRequest, string $downloadUrl): void
     {
-        $exportDelegationsRequest->setStatus(ExportStatusEnum::DONE);
-        $exportDelegationsRequest->setDownloadLink($downloadUrl);
+        $exportDelegationsRequest
+            ->setStatus(ExportStatusEnum::DONE)
+            ->setDownloadLink($downloadUrl)
+            ->setUpdatedAt(new \DateTime())
+        ;
         $this->entityManager->flush();
 
         $this->eventDispatcher->dispatch(new ExportDelegationsRequestDoneEvent($exportDelegationsRequest));
@@ -80,8 +83,11 @@ class ExportDelegationsManager
 
     public function flagAsErrored(ExportDelegationsRequest $exportDelegationsRequest, string $error): void
     {
-        $exportDelegationsRequest->setStatus(ExportStatusEnum::ERROR);
-        $exportDelegationsRequest->setError($error);
+        $exportDelegationsRequest
+            ->setStatus(ExportStatusEnum::ERROR)
+            ->setError($error)
+            ->setUpdatedAt(new \DateTime())
+        ;
         $this->entityManager->flush();
     }
 
