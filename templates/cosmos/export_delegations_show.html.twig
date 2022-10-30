@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row" style="padding-top: 50px">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-12 col-md-10">
+                        <h1>Export {{ exportDelegationsRequest.network }} (Height: {{ exportDelegationsRequest.height ?: 'latest' }})</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-10">
+                        <b>Network: </b>{{ exportDelegationsRequest.network }}<br>
+                        <b>Api Client: </b>{{ exportDelegationsRequest.apiClient ?: 'Random Public One' }}<br>
+                        <b>Height: </b>{{ exportDelegationsRequest.height ?: 'latest' }}<br>
+                        <b>Status: </b>{{ exportDelegationsRequest.status }}<br/>
+                        <b>Email: </b>{{ exportDelegationsRequest.email }}<br/>
+                        <b>Download: </b>
+                            {% if exportDelegationsRequest.downloadLink is empty %}
+                                <i>Not available yet</i>
+                            {% else %}
+                                <a href="{{ exportDelegationsRequest.downloadLink }}">Download</a>
+                            {% endif %}
+                        <br/>
+                        <b>Created at: </b>{{ exportDelegationsRequest.createdAt|date('Y-m-d H:i:s') }}<br/>
+                        <b>Updated at: </b>{{ exportDelegationsRequest.updatedAt|date('Y-m-d H:i:s') }}<br/>
+                    </div>
+                    <div class="col-sm-12">
+                        <br/>
+                        <p>
+                            Bookmark this page to follow the progress of the export and to download it later.
+                        </p>
+                        <p>
+                            You can also save the token <code>{{ exportDelegationsRequest.token }}</code> to retrieve the export later.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts_footer %}
+
+{% endblock %}

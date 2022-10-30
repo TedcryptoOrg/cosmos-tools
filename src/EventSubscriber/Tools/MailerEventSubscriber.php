@@ -3,21 +3,16 @@
 namespace App\EventSubscriber\Tools;
 
 use App\Event\Tools\ExportDelegationsRequestDoneEvent;
-use Psr\Log\LoggerInterface;
+use App\Service\Tools\ExportDelegationsMailer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 
 class MailerEventSubscriber implements EventSubscriberInterface
 {
-    private MailerInterface $mailer;
+    private ExportDelegationsMailer $exportDelegationsMailer;
 
-    private LoggerInterface $logger;
-
-    public function __construct(MailerInterface $mailer, LoggerInterface $logger)
+    public function __construct(ExportDelegationsMailer $exportDelegationsMailer)
     {
-        $this->mailer = $mailer;
-        $this->logger = $logger;
+        $this->exportDelegationsMailer = $exportDelegationsMailer;
     }
 
     public static function getSubscribedEvents(): array
@@ -29,21 +24,6 @@ class MailerEventSubscriber implements EventSubscriberInterface
 
     public function onExportDelegationsRequestDone(ExportDelegationsRequestDoneEvent $event)
     {
-        $email = (new Email())
-            ->from('hello@example.com')
-            ->to($event->getExportDelegationsRequest()->getDownloadLink())
-            ->subject('Your export is ready')
-            ->text('Your export is completed and can be downloaded here: '.$event->getExportDelegationsRequest()->getDownloadLink())
-            ->html('
-                <p>
-                    Your export is completed and can be download <a href="'.$event->getExportDelegationsRequest()->getDownloadLink().'">here</a>.
-                </p>
-                <p>If you are having problems with the link, try access it directly here: '.$event->getExportDelegationsRequest()->getDownloadLink().'</p>');
-
-        try {
-            $this->mailer->send($email);
-        } catch (\Exception $e) {
-            $this->logger->error('Error sending email for request "'.$event->getExportDelegationsRequest()->getId().'": '.$e->getMessage());
-        }
+        $this->exportDelegationsMailer->sendDownloadEmail($event->getExportDelegationsRequest());
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Controller\Cosmos;
 
 use App\Controller\BaseController;
+use App\Entity\Tools\ExportDelegationsRequest;
 use App\Form\Cosmos\ExportDelegationsFormHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,6 +25,16 @@ class ExportDelegationController extends BaseController
 
         return $this->render('cosmos/export_delegations.html.twig', [
             'form' => $formResponse->getForm()->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/cosmos/export-delegations/{token}", name="app_cosmos_export_delegations_show")
+     */
+    public function checkAction(ExportDelegationsRequest $exportDelegationsRequest): Response
+    {
+        return $this->render('cosmos/export_delegations_show.html.twig', [
+            'exportDelegationsRequest' => $exportDelegationsRequest,
         ]);
     }
 }

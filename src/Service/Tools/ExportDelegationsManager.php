@@ -4,11 +4,13 @@ namespace App\Service\Tools;
 
 use App\Entity\Tools\ExportDelegationsRequest;
 use App\Enum\Export\ExportStatusEnum;
+use App\Event\Tools\ExportDelegationsRequestDoneEvent;
 use App\Model\Cosmos\Staking\DelegationResponses;
 use App\Service\Cosmos\CosmosClient;
 use App\Service\Cosmos\CosmosClientFactory;
 use App\Service\CosmosDirectory\ValidatorCosmosDirectoryClient;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ExportDelegationsManager
@@ -19,14 +21,22 @@ class ExportDelegationsManager
 
     private CosmosClientFactory $cosmosClientFactory;
 
+    private EventDispatcherInterface $eventDispatcher;
+
     private Filesystem $filesystem;
 
-    public function __construct(EntityManagerInterface $entityManager, ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient, CosmosClientFactory $cosmosClientFactory)
+    public function __construct(EntityManagerInterface $entityManager, ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient, EventDispatcherInterface $eventDispatcher, CosmosClientFactory $cosmosClientFactory)
     {
         $this->entityManager = $entityManager;
         $this->validatorCosmosDirectoryClient = $validatorCosmosDirectoryClient;
         $this->cosmosClientFactory = $cosmosClientFactory;
+        $this->eventDispatcher = $eventDispatcher;
         $this->filesystem = new Filesystem();
+    }
+
+    public function find(int $id): ?ExportDelegationsRequest
+    {
+        return $this->entityManager->getRepository(ExportDelegationsRequest::class)->find($id);
     }
 
     /**
