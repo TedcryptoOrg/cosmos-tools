@@ -15,7 +15,6 @@ RUN apk add --no-cache --virtual .persistent-deps \
 		make \
         nginx
 
-ENV APCU_VERSION 5.1.21
 RUN install-php-extensions \
 		intl \
 		pdo_mysql \

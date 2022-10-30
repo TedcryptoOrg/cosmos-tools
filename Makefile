@@ -49,6 +49,8 @@ fixtures: down run import_dev
 cache_clear:
 	docker-compose exec php bin/console cache:clear
 
+ssh: bash
+
 bash:
 	docker-compose exec -it php sh
 
