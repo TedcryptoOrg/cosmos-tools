@@ -6,4 +6,6 @@ if [ "${1#-}" != "$1" ]; then
 	set -- php-fpm "$@"
 fi
 
+chown -R www-data:www-data var
+
 exec docker-php-entrypoint "$@"

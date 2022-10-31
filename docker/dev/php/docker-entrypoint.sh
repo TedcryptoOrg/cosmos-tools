@@ -6,6 +6,8 @@ if [ "${1#-}" != "$1" ]; then
 	set -- php-fpm "$@"
 fi
 
+chown -R www-data:www-data var
+
 # xdebug config
 if [ -f /usr/local/etc/php/conf.d/xdebug.ini ]
 then
