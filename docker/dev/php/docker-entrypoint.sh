@@ -6,18 +6,6 @@ if [ "${1#-}" != "$1" ]; then
 	set -- php-fpm "$@"
 fi
 
-if [ "$1" = 'php-fpm' ] || [ "$1" = 'bin/console' ]; then
-	#if [ "$APP_ENV" != 'prod' ]; then
-	#	composer install --prefer-dist --no-progress --no-suggest --no-interaction
-	#	bin/console assets:install
-	#	bin/console doctrine:migration:migrate --no-interaction
-	#	bin/console doctrine:cache:clear-metadata
-	#fi
-
-	# Permissions hack because setfacl does not work on Mac and Windows
-	chown -R www-data var
-fi
-
 # xdebug config
 if [ -f /usr/local/etc/php/conf.d/xdebug.ini ]
 then

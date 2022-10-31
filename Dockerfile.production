@@ -68,7 +68,7 @@ RUN mkdir -p var/cache var/logs var/sessions \
 RUN rm -rf /etc/nginx/sites-enabled \
     && mkdir -p /etc/nginx/sites-enabled
 
-#RUN /srv/bin/console doctrine:migrations:migrate -n --env=prod
+RUN /srv/bin/console doctrine:migrations:migrate -n --env=prod
 
 RUN chmod -R 777 /srv/public \
     && chmod -R 777 /srv/var/cache \
