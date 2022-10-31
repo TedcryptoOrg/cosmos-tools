@@ -112,7 +112,7 @@ class ExportDelegationsManager
             $offset = 0;
             $lastDelegator = null;
             while (true) {
-                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], $limit, $offset);
+                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], $exportDelegationsRequest->getHeight(), $limit, $offset);
                 if (\count($delegations->getDelegationResponses()) === 0) {
                     break;
                 }

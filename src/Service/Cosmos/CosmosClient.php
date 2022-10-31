@@ -37,13 +37,19 @@ class CosmosClient
         return $this->provider;
     }
 
-    public function getValidatorDelegations(string $validator, int $limit = 1000, int $offset = 0): DelegationResponses
+    public function getValidatorDelegations(string $validator, ?string $height, int $limit = 1000, int $offset = 0): DelegationResponses
     {
         $response = $this->client
             ->request(
                 'GET',
                 '/cosmos/staking/v1beta1/validators/'.$validator.'/delegations',
-                [RequestOptions::QUERY => ['pagination.limit' => $limit, 'pagination.offset' => $offset]]
+                [
+                    RequestOptions::QUERY => [
+                        'pagination.limit' => $limit,
+                        'pagination.offset' => $offset,
+                        'height' => $height,
+                    ]
+                ]
             );
 
         if ($response->getStatusCode() !== 200) {

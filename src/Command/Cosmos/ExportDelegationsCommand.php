@@ -76,7 +76,7 @@ class ExportDelegationsCommand extends Command
             $lastDelegator = null;
             while (true) {
                 $style->writeln('Fetching delegations... Page '.$page);
-                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], $limit, $offset);
+                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], null, $limit, $offset);
                 if (\count($delegations->getDelegationResponses()) === 0) {
                     $style->writeln('No more delegations!');
                     break;
