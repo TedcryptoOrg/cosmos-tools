@@ -4,12 +4,12 @@ namespace App\Command;
 
 use App\Service\Tools\ExportDelegationsMailer;
 use App\Service\Tools\ExportDelegationsManager;
-use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'tools:cosmos:export-delegations-send-email',
@@ -38,7 +38,7 @@ class ExportDelegationSendEmailCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $style = new ConsoleStyle($input, $output);
+        $style = new SymfonyStyle($input, $output);
         $id = $input->getArgument('id');
 
         $exportDelegationRequest = $this->exportDelegationsManager->find($id);

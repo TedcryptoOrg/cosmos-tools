@@ -6,12 +6,12 @@ use App\Model\Cosmos\Staking\DelegationResponses;
 use App\Service\Cosmos\CosmosClient;
 use App\Service\Cosmos\CosmosClientFactory;
 use App\Service\CosmosDirectory\ValidatorCosmosDirectoryClient;
-use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
@@ -47,7 +47,7 @@ class ExportDelegationsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $style = new ConsoleStyle($input, $output);
+        $style = new SymfonyStyle($input, $output);
         $chain = $input->getArgument('chain');
         $validator = $input->getOption('validator');
         $limit = $input->getOption('limit');
