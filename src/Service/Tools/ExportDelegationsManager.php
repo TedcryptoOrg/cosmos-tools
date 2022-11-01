@@ -48,9 +48,9 @@ class ExportDelegationsManager
     {
         $exportDelegationsRequest = new ExportDelegationsRequest();
         $exportDelegationsRequest
-            ->setApiClient($formData['api_client'])
-            ->setEmail($formData['email'])
-            ->setHeight($formData['height'])
+            ->setApiClient($formData['custom_api_server'] ?: $formData['api_client'])
+            ->setEmail($formData['email'] ?: null)
+            ->setHeight($formData['height'] ?: null)
             ->setNetwork($formData['network'])
         ;
 

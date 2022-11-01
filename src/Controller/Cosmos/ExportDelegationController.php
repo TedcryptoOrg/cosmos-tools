@@ -5,6 +5,7 @@ namespace App\Controller\Cosmos;
 use App\Controller\BaseController;
 use App\Entity\Tools\ExportDelegationsRequest;
 use App\Form\Cosmos\ExportDelegationsFormHandler;
+use App\Service\CosmosDirectory\ChainsCosmosDirectoryClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

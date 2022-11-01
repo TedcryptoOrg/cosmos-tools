@@ -49,12 +49,33 @@
 {% block javascripts_footer %}
     <script>
         $(document).ready(function (e){
+            const $networkChoice = $('#{{ form.network.vars.id }}');
+            const $serverChoice = $('#{{ form.api_client.vars.id }}');
+            const $customServer = $('#{{ form.custom_api_server.vars.id }}');
+
             $('#check-export').submit(function (e){
                 e.preventDefault();
                 var token = $('#export-id').val();
 
                 window.location = {{ path('app_cosmos_export_delegations_show', {'token': '||token||'})|json_encode|raw }}.replace('||token||', token);
             });
+
+            $networkChoice.change(function (e) {
+                var value = $(this).val();
+                $serverChoice.hide();
+                $serverChoice.find('optgroup').hide();
+                if (value) {
+                    $serverChoice.show();
+                    $serverChoice.find('optgroup[label="'+value+'"]').show().find('option').first().prop('selected', true);
+                }
+            }).trigger('change');
+
+            $serverChoice.change(function (e) {
+                $customServer.parent().hide();
+                if ($(this).val().indexOf('custom') === 0) {
+                    $customServer.parent().show();
+                }
+            }).trigger('change');
         });
     </script>
 {% endblock %}
