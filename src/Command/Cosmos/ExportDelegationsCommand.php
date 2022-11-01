@@ -40,6 +40,7 @@ class ExportDelegationsCommand extends Command
         $this
             ->addArgument('chain', InputArgument::REQUIRED, 'Chain')
             ->addOption('validator', null, InputArgument::OPTIONAL, 'Validator')
+            ->addOption('height', null, InputArgument::OPTIONAL, 'Height', null)
             ->addOption('limit', null, InputArgument::OPTIONAL, 'Limit', 1000)
             ->addOption('api-client', null, InputArgument::OPTIONAL, 'API Client (e.g: https://rest.cosmos.network:1317)')
         ;
@@ -49,6 +50,7 @@ class ExportDelegationsCommand extends Command
     {
         $style = new SymfonyStyle($input, $output);
         $chain = $input->getArgument('chain');
+        $height = $input->getOption('height');
         $validator = $input->getOption('validator');
         $limit = $input->getOption('limit');
         $apiClient = $input->getOption('api-client');
@@ -76,7 +78,7 @@ class ExportDelegationsCommand extends Command
             $lastDelegator = null;
             while (true) {
                 $style->writeln('Fetching delegations... Page '.$page);
-                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], null, $limit, $offset);
+                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], $height, $limit, $offset);
                 if (\count($delegations->getDelegationResponses()) === 0) {
                     $style->writeln('No more delegations!');
                     break;
