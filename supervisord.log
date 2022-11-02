@@ -16,3 +16,9 @@
 2022-11-02 14:34:47,443 INFO spawned: 'messenger-consume_01' with pid 25
 2022-11-02 14:34:48,069 INFO success: messenger-consume_00 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
 2022-11-02 14:34:48,070 INFO success: messenger-consume_01 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2022-11-02 15:09:03,186 INFO Set uid to user 82 succeeded
+2022-11-02 15:09:03,191 INFO supervisord started with pid 7
+2022-11-02 15:09:04,194 INFO spawned: 'messenger-consume_00' with pid 24
+2022-11-02 15:09:04,199 INFO spawned: 'messenger-consume_01' with pid 25
+2022-11-02 15:09:05,201 INFO success: messenger-consume_00 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2022-11-02 15:09:05,202 INFO success: messenger-consume_01 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
