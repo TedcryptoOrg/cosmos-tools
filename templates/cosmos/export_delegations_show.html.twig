@@ -15,7 +15,10 @@
                         <b>Api Client: </b>{{ exportDelegationsRequest.apiClient ?: 'Random Public One' }}<br>
                         <b>Height: </b>{{ exportDelegationsRequest.height ?: 'latest' }}<br>
                         <b>Status: </b>{{ exportDelegationsRequest.status }}<br/>
-                        <b>Email: </b>{{ exportDelegationsRequest.email }}<br/>
+                        {% if exportDelegationsRequest.status == constant('\\App\\Enum\\Export\\ExportStatusEnum::ERROR') %}
+                            <b>Error: </b>{{ exportDelegationsRequest.error }}<br/>
+                        {% endif %}
+                        <b>Email: </b>{{ exportDelegationsRequest.email|default('n.a.') }}<br/>
                         <b>Download: </b>
                             {% if exportDelegationsRequest.downloadLink is empty %}
                                 <i>Not available yet</i>
@@ -25,6 +28,18 @@
                         <br/>
                         <b>Created at: </b>{{ exportDelegationsRequest.createdAt|date('Y-m-d H:i:s') }}<br/>
                         <b>Updated at: </b>{{ exportDelegationsRequest.updatedAt|date('Y-m-d H:i:s') }}<br/>
+                    </div>
+                    <div class="col-sm-12">
+                        {% if exportDelegationsRequest.status == constant('\\App\\Enum\\Export\\ExportStatusEnum::ERROR') %}
+                            <a href="{{ path('app_cosmos_export_delegations_retry', {token: exportDelegationsRequest.token}) }}" class="btn btn-warning">
+                                Retry
+                            </a>
+                        {% endif %}
+                        {% if exportDelegationsRequest.status == constant('\\App\\Enum\\Export\\ExportStatusEnum::PENDING') %}
+                            <a href="{{ path('app_cosmos_export_delegations_cancel', {token: exportDelegationsRequest.token}) }}" class="btn btn-danger">
+                                Cancel
+                            </a>
+                        {% endif %}
                     </div>
                     <div class="col-sm-12">
                         <br/>

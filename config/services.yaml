@@ -21,6 +21,7 @@ services:
             - '../src/Kernel.php'
             - '../src/Model/'
             - '../src/Event/'
+            - '../src/Message/'
             - '../src/Service/Cosmos/CosmosClient.php'
         public: true
 

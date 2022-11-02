@@ -3,13 +3,14 @@
 namespace App\Command;
 
 use App\Enum\Export\ExportStatusEnum;
+use App\Message\Tools\ExportDelegationMessage;
 use App\Service\Tools\ExportDelegationsManager;
-use App\Service\Uploader\TedcryptoTransfer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsCommand(
     name: 'app:export-delegation-requests',
@@ -19,14 +20,14 @@ class ExportDelegationRequestsCommand extends Command
 {
     private ExportDelegationsManager $exportDelegationsManager;
 
-    private TedcryptoTransfer $tedcryptoTransfer;
+    private MessageBusInterface $bus;
 
-    public function __construct(ExportDelegationsManager $exportDelegationsManager, TedcryptoTransfer $tedcryptoTransfer)
+    public function __construct(ExportDelegationsManager $exportDelegationsManager, MessageBusInterface $bus)
     {
         parent::__construct();
 
         $this->exportDelegationsManager = $exportDelegationsManager;
-        $this->tedcryptoTransfer = $tedcryptoTransfer;
+        $this->bus = $bus;
     }
 
     protected function configure()
@@ -46,17 +47,8 @@ class ExportDelegationRequestsCommand extends Command
         $style->section(sprintf('Processing request %d', $request->getId()));
         $this->exportDelegationsManager->flagProcessing($request, ExportStatusEnum::PROCESSING);
 
-        try {
-            $style->writeln('Exporting delegations');
-            $exportLocation = $this->exportDelegationsManager->exportDelegations($request);
-            $style->writeln(sprintf('Exported delegations to %s', $exportLocation));
-            $style->writeln('Uploading delegations');
-            $downloadLink = $this->tedcryptoTransfer->upload($exportLocation, sprintf('%s_delegations%s', $request->getNetwork(), $request->getHeight() ? '_'.$request->getHeight() : ''));
-            $style->writeln(sprintf('Uploaded delegations to %s', $downloadLink));
-            $this->exportDelegationsManager->flagAsDone($request, $downloadLink);
-        } catch (\Exception $exception) {
-            $this->exportDelegationsManager->flagAsErrored($request, $exception->getMessage());
-        }
+        // Queue the old exports if any
+        $this->bus->dispatch(new ExportDelegationMessage($request->getId()));
 
         return Command::SUCCESS;
     }

@@ -5,13 +5,20 @@ namespace App\Controller\Cosmos;
 use App\Controller\BaseController;
 use App\Entity\Tools\ExportDelegationsRequest;
 use App\Form\Cosmos\ExportDelegationsFormHandler;
-use App\Service\CosmosDirectory\ChainsCosmosDirectoryClient;
+use App\Service\Tools\ExportDelegationsManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ExportDelegationController extends BaseController
 {
+    private ExportDelegationsManager $exportDelegationsManager;
+
+    public function __construct(ExportDelegationsManager $exportDelegationsManager)
+    {
+        $this->exportDelegationsManager = $exportDelegationsManager;
+    }
+
     /**
      * @Route("/cosmos/export-delegations", name="app_cosmos_export_delegations")
      */
@@ -37,5 +44,25 @@ class ExportDelegationController extends BaseController
         return $this->render('cosmos/export_delegations_show.html.twig', [
             'exportDelegationsRequest' => $exportDelegationsRequest,
         ]);
+    }
+
+    /**
+     * @Route("/cosmos/export-delegations/{token}/cancel", name="app_cosmos_export_delegations_cancel")
+     */
+    public function cancelAction(ExportDelegationsRequest $exportDelegationsRequest): Response
+    {
+        $this->exportDelegationsManager->cancel($exportDelegationsRequest);
+
+        return $this->redirectToRoute('app_cosmos_export_delegations_show', ['token' => $exportDelegationsRequest->getToken()]);
+    }
+
+    /**
+     * @Route("/cosmos/export-delegations/{token}/retry", name="app_cosmos_export_delegations_retry")
+     */
+    public function retryAction(ExportDelegationsRequest $exportDelegationsRequest): Response
+    {
+        $this->exportDelegationsManager->retry($exportDelegationsRequest);
+
+        return $this->redirectToRoute('app_cosmos_export_delegations_show', ['token' => $exportDelegationsRequest->getToken()]);
     }
 }

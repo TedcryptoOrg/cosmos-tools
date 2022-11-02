@@ -4,14 +4,15 @@ namespace App\Service\Tools;
 
 use App\Entity\Tools\ExportDelegationsRequest;
 use App\Enum\Export\ExportStatusEnum;
-use App\Event\Tools\ExportDelegationsRequestDoneEvent;
+use App\Message\Tools\ExportDelegationMessage;
 use App\Model\Cosmos\Staking\DelegationResponses;
 use App\Service\Cosmos\CosmosClient;
 use App\Service\Cosmos\CosmosClientFactory;
 use App\Service\CosmosDirectory\ValidatorCosmosDirectoryClient;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class ExportDelegationsManager
 {
@@ -21,17 +22,20 @@ class ExportDelegationsManager
 
     private CosmosClientFactory $cosmosClientFactory;
 
-    private EventDispatcherInterface $eventDispatcher;
-
     private Filesystem $filesystem;
 
-    public function __construct(EntityManagerInterface $entityManager, ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient, EventDispatcherInterface $eventDispatcher, CosmosClientFactory $cosmosClientFactory)
+    private LoggerInterface $logger;
+
+    private MessageBusInterface $bus;
+
+    public function __construct(EntityManagerInterface $entityManager, ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient, CosmosClientFactory $cosmosClientFactory, LoggerInterface $logger, MessageBusInterface $bus)
     {
         $this->entityManager = $entityManager;
         $this->validatorCosmosDirectoryClient = $validatorCosmosDirectoryClient;
         $this->cosmosClientFactory = $cosmosClientFactory;
-        $this->eventDispatcher = $eventDispatcher;
         $this->filesystem = new Filesystem();
+        $this->logger = $logger;
+        $this->bus = $bus;
     }
 
     public function find(int $id): ?ExportDelegationsRequest
@@ -77,8 +81,6 @@ class ExportDelegationsManager
             ->setUpdatedAt(new \DateTime())
         ;
         $this->entityManager->flush();
-
-        $this->eventDispatcher->dispatch(new ExportDelegationsRequestDoneEvent($exportDelegationsRequest));
     }
 
     public function flagAsErrored(ExportDelegationsRequest $exportDelegationsRequest, string $error): void
@@ -94,14 +96,18 @@ class ExportDelegationsManager
     public function exportDelegations(ExportDelegationsRequest $exportDelegationsRequest): string
     {
         if ($this->filesystem->exists('var/export/'.$exportDelegationsRequest->getId())) {
+            $this->logger->debug('Removing old export directory');
             $this->filesystem->remove('var/export'.$exportDelegationsRequest->getId());
         }
+        $this->logger->debug('Creating export directory');
         $this->filesystem->mkdir('var/export'.$exportDelegationsRequest->getId());
 
         $validators = $this->validatorCosmosDirectoryClient->getChain($exportDelegationsRequest->getNetwork());
+        $this->logger->info('Found '.count($validators).' validators for network: '. $exportDelegationsRequest->getNetwork());
 
         if ($exportDelegationsRequest->getApiClient()) {
-            $cosmosClient = new CosmosClient($exportDelegationsRequest->getApiClient(), 'manual');
+            $this->logger->debug('Using manual api client: '.$exportDelegationsRequest->getApiClient());
+            $cosmosClient = $this->cosmosClientFactory->createClientManually($exportDelegationsRequest->getApiClient());
         } else {
             $cosmosClient = $this->cosmosClientFactory->createClient($exportDelegationsRequest->getNetwork());
         }
@@ -112,11 +118,14 @@ class ExportDelegationsManager
             $offset = 0;
             $lastDelegator = null;
             while (true) {
-                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], $exportDelegationsRequest->getHeight(), $limit, $offset);
+                $this->logger->debug('Fetching delegations for validator: '.$validator['address'].' page: '.$page);
+                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], (string) $exportDelegationsRequest->getHeight(), $limit, $offset);
                 if (\count($delegations->getDelegationResponses()) === 0) {
+                    $this->logger->debug('No delegations for validator: '.$validator['address']);
                     break;
                 }
                 if ($delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress() === $lastDelegator) {
+                    $this->logger->debug('No more delegations for validator: '.$validator['address']);
                     break;
                 }
                 $lastDelegator = $delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress();
@@ -133,6 +142,7 @@ class ExportDelegationsManager
             }
         }
 
+        $this->logger->debug('Export completed');
         return 'var/export/'.$exportDelegationsRequest->getId();
     }
 
@@ -155,5 +165,29 @@ class ExportDelegationsManager
             ]);
         }
         fclose($file);
+    }
+
+    public function cancel(ExportDelegationsRequest $exportDelegationsRequest): void
+    {
+        $exportDelegationsRequest
+            ->setStatus(ExportStatusEnum::CANCELLED)
+            ->setUpdatedAt(new \DateTime())
+        ;
+        $this->entityManager->flush();
+    }
+
+    public function retry(ExportDelegationsRequest $exportDelegationsRequest): void
+    {
+        if ($exportDelegationsRequest->getStatus() !== ExportStatusEnum::ERROR) {
+            throw new \LogicException(sprintf('Cannot retry export delegations request "%s" with status: %s', $exportDelegationsRequest->getId(), $exportDelegationsRequest->getStatus()));
+        }
+
+        $exportDelegationsRequest
+            ->setStatus(ExportStatusEnum::PENDING)
+            ->setUpdatedAt(new \DateTime())
+        ;
+        $this->entityManager->flush();
+
+        $this->bus->dispatch(new ExportDelegationMessage($exportDelegationsRequest->getId()));
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Command\Cosmos;
 
 use App\Model\Cosmos\Staking\DelegationResponses;
-use App\Service\Cosmos\CosmosClient;
 use App\Service\Cosmos\CosmosClientFactory;
 use App\Service\CosmosDirectory\ValidatorCosmosDirectoryClient;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -64,7 +63,7 @@ class ExportDelegationsCommand extends Command
         }
 
         if ($apiClient) {
-            $cosmosClient = new CosmosClient($apiClient, 'manual');
+            $cosmosClient = $this->cosmosClientFactory->createClientManually($apiClient);
         } else {
             $cosmosClient = $this->cosmosClientFactory->createClient($chain);
         }
