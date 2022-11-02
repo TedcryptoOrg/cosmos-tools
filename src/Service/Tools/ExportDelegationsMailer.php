@@ -6,6 +6,8 @@ use App\Entity\Tools\ExportDelegationsRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class ExportDelegationsMailer
 {
@@ -15,11 +17,14 @@ class ExportDelegationsMailer
 
     private LoggerInterface $logger;
 
-    public function __construct(ExportDelegationsManager $exportDelegationsManager, MailerInterface $mailer, LoggerInterface $logger)
+    private RouterInterface $router;
+
+    public function __construct(ExportDelegationsManager $exportDelegationsManager, MailerInterface $mailer, LoggerInterface $logger, RouterInterface $router)
     {
         $this->exportDelegationsManager = $exportDelegationsManager;
         $this->mailer = $mailer;
         $this->logger = $logger;
+        $this->router = $router;
     }
 
     public function sendDownloadEmail(ExportDelegationsRequest $exportDelegationsRequest): void
@@ -27,12 +32,17 @@ class ExportDelegationsMailer
         if (!$exportDelegationsRequest->getEmail()) {
             return;
         }
-
+        $fullLink = $this->router->generate(
+            'app_cosmos_export_delegations_show',
+            ['token' => $exportDelegationsRequest->getToken()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
         $email = (new Email())
             ->to($exportDelegationsRequest->getEmail())
             ->subject('Your export is ready')
             ->text('Your export is completed and can be downloaded here: '.$exportDelegationsRequest->getDownloadLink())
             ->html('
+                <p>Your export: '.$fullLink.'</p>
                 <p>
                     Your export is completed and can be download <a href="'.$exportDelegationsRequest->getDownloadLink().'">here</a>.
                 </p>
@@ -54,12 +64,18 @@ class ExportDelegationsMailer
         if (!$exportDelegationsRequest->getEmail()) {
             return;
         }
+        $fullLink = $this->router->generate(
+            'app_cosmos_export_delegations_show',
+            ['token' => $exportDelegationsRequest->getToken()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
         $email = (new Email())
             ->to($exportDelegationsRequest->getEmail())
             ->subject('Your export failed')
             ->text('Your export has failed. Please try again later.')
             ->html('
+                <p>Your export: '.$fullLink.'</p>
                 <p>
                     Your export has failed with the following error:
                 </p>
@@ -69,7 +85,7 @@ class ExportDelegationsMailer
                 <p>You can reach out to us on:<br/> 
                     Telegram (http://telegram.tedcrypto.io)<br/>
                     Discord (http://discord.tedcrypto.io)<br/>
-                    Twitter (https://www.twitter.com/tedcrypto_
+                    Twitter (https://www.twitter.com/tedcrypto_)
                 </p><br/>
                 <p>Thank you!</p>    
             ');
