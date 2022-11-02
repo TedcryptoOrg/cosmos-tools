@@ -48,6 +48,9 @@ class CosmosClient
                         'pagination.limit' => $limit,
                         'pagination.offset' => $offset,
                         'height' => $height,
+                    ],
+                    RequestOptions::HEADERS => [
+                        'x-cosmos-block-height' => $height,
                     ]
                 ]
             );
