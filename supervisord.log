@@ -1,0 +1,18 @@
+2022-11-02 14:25:10,441 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2022-11-02 14:25:10,445 INFO supervisord started with pid 8
+2022-11-02 14:25:11,447 INFO spawned: 'messenger-consume_00' with pid 24
+2022-11-02 14:25:11,450 INFO spawned: 'messenger-consume_01' with pid 25
+2022-11-02 14:25:12,039 INFO success: messenger-consume_00 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2022-11-02 14:25:12,039 INFO success: messenger-consume_01 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2022-11-02 14:26:32,745 INFO Set uid to user 0 succeeded
+2022-11-02 14:26:32,750 INFO supervisord started with pid 7
+2022-11-02 14:26:33,753 INFO spawned: 'messenger-consume_00' with pid 23
+2022-11-02 14:26:33,755 INFO spawned: 'messenger-consume_01' with pid 24
+2022-11-02 14:26:34,373 INFO success: messenger-consume_00 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2022-11-02 14:26:34,374 INFO success: messenger-consume_01 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2022-11-02 14:34:46,434 INFO Set uid to user 0 succeeded
+2022-11-02 14:34:46,438 INFO supervisord started with pid 8
+2022-11-02 14:34:47,440 INFO spawned: 'messenger-consume_00' with pid 24
+2022-11-02 14:34:47,443 INFO spawned: 'messenger-consume_01' with pid 25
+2022-11-02 14:34:48,069 INFO success: messenger-consume_00 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2022-11-02 14:34:48,070 INFO success: messenger-consume_01 entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)

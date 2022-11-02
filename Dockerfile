@@ -14,15 +14,14 @@ RUN apk add --no-cache --virtual .persistent-deps \
 		autoconf \
 		automake \
 		g++ \
-		make
+		make \
+        nginx \
+        supervisor
 
-ENV APCU_VERSION 5.1.21
 RUN install-php-extensions \
     intl \
     pdo_mysql \
-    zip \
-    bcmath \
-    sockets
+    zip
 
 # Install XDebug
 RUN if [ "$xdebug" -eq "1" ]; then \
@@ -30,6 +29,8 @@ RUN if [ "$xdebug" -eq "1" ]; then \
     ;fi
 
 COPY --from=0 /usr/bin/composer /usr/bin/composer
+
+COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/dev/php/conf.d/php.ini /usr/local/etc/php/php.ini
 COPY docker/dev/php/conf.d/error_reporting.ini /usr/local/etc/php/conf.d/error_reporting.ini
 COPY docker/dev/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint

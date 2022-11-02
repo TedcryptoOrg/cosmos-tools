@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -e -m
 
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
@@ -7,6 +7,9 @@ if [ "${1#-}" != "$1" ]; then
 fi
 
 chown -R www-data:www-data var
+
+# Run supervisord for messenger
+supervisord &
 
 # xdebug config
 if [ -f /usr/local/etc/php/conf.d/xdebug.ini ]
