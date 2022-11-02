@@ -143,7 +143,7 @@ class ExportDelegationsManager
         }
 
         $this->logger->debug('Export completed');
-        return 'var/export/'.$exportDelegationsRequest->getId();
+        return 'var/export/'.$exportDelegationsRequest->getId().'/';
     }
 
     private function exportToCsv(ExportDelegationsRequest $exportDelegationsRequest, DelegationResponses $delegations, string $validatorAddress, int $page): void
