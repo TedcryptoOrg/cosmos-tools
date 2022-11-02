@@ -97,10 +97,10 @@ class ExportDelegationsManager
     {
         if ($this->filesystem->exists('var/export/'.$exportDelegationsRequest->getId())) {
             $this->logger->debug('Removing old export directory');
-            $this->filesystem->remove('var/export'.$exportDelegationsRequest->getId());
+            $this->filesystem->remove('var/export/'.$exportDelegationsRequest->getId());
         }
         $this->logger->debug('Creating export directory');
-        $this->filesystem->mkdir('var/export'.$exportDelegationsRequest->getId());
+        $this->filesystem->mkdir('var/export/'.$exportDelegationsRequest->getId());
 
         $validators = $this->validatorCosmosDirectoryClient->getChain($exportDelegationsRequest->getNetwork());
         $this->logger->info('Found '.count($validators).' validators for network: '. $exportDelegationsRequest->getNetwork());
