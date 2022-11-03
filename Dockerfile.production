@@ -4,29 +4,21 @@ FROM php:8-fpm-alpine
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN apk add --no-cache --virtual .persistent-deps \
-		git \
-		icu-libs \
-		libpq \
-		rabbitmq-c-dev \
-		zlib \
-		autoconf \
-		automake \
-		g++ \
-		make \
         nginx \
         supervisor
 
 RUN install-php-extensions \
 		intl \
 		pdo_mysql \
-		zip
+		zip \
+        pcnl
 
 COPY --from=0 /usr/bin/composer /usr/bin/composer
 
 COPY docker/prod/php/conf.d/php.ini /usr/local/etc/php/php.ini
 COPY docker/prod/php/conf.d/error_reporting.ini /usr/local/etc/php/conf.d/error_reporting.ini
 
-COPY docker/supervisord.conf /etc/supervisord.conf
+COPY docker/prod/supervisord.conf /etc/supervisord.conf
 COPY docker/prod/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 COPY docker/prod/docker_entry.sh /usr/local/bin/docker_entry
 RUN chmod +x /usr/local/bin/docker-entrypoint
@@ -47,8 +39,6 @@ ARG APP_ENV=${APP_ENV}
 ENV APP_ENV=$APP_ENV
 ARG SENTRY_DSN=${SENTRY_DSN}
 ENV SENTRY_DSN=$SENTRY_DSN
-ARG LOGTAIL_KEY=${LOGTAIL_KEY}
-ENV LOGTAIL_KEY=$LOGTAIL_KEY
 ARG DATABASE_URL=${DATABASE_URL}
 ENV DATABASE_URL=$DATABASE_URL
 

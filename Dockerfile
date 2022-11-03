@@ -3,34 +3,19 @@ FROM php:8-fpm-alpine
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-ARG xdebug=1
-
 RUN apk add --no-cache --virtual .persistent-deps \
-		git \
-		icu-libs \
-		libpq \
-		rabbitmq-c-dev \
-		zlib \
-		autoconf \
-		automake \
-		g++ \
-		make \
-        nginx \
         supervisor
 
 RUN install-php-extensions \
     intl \
     pdo_mysql \
-    zip
-
-# Install XDebug
-RUN if [ "$xdebug" -eq "1" ]; then \
-        install-php-extensions xdebug \
-    ;fi
+    zip \
+    xdebug \
+    pcnl
 
 COPY --from=0 /usr/bin/composer /usr/bin/composer
 
-COPY docker/supervisord.conf /etc/supervisord.conf
+COPY docker/dev/supervisord.conf /etc/supervisord.conf
 COPY docker/dev/php/conf.d/php.ini /usr/local/etc/php/php.ini
 COPY docker/dev/php/conf.d/error_reporting.ini /usr/local/etc/php/conf.d/error_reporting.ini
 COPY docker/dev/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
