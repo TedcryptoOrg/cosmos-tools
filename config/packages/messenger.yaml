@@ -28,7 +28,7 @@ framework:
                     # which can free up database connections in a worker,
                     # instead of keeping them open forever
                     - doctrine_close_connection
-                -
+
         routing:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: async
             Symfony\Component\Notifier\Message\ChatMessage: async
