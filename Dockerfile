@@ -11,7 +11,7 @@ RUN install-php-extensions \
     pdo_mysql \
     zip \
     xdebug \
-    pcnl
+    pcntl
 
 COPY --from=0 /usr/bin/composer /usr/bin/composer
 
