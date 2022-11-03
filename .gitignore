@@ -1,3 +1,7 @@
+###> app ###
+supervisord.log
+supervisord.pid
+###< app ###
 
 ###> symfony/framework-bundle ###
 /.env
