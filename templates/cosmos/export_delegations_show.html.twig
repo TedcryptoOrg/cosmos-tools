@@ -60,17 +60,19 @@
             const url = '{{ path('app_cosmos_export_delegations_status', {token: exportDelegationsRequest.token}) }}';
             const $statusProgress = $('#status-progress');
 
-            const interval = setInterval(function () {
-                $.get(url, function (data) {
-                    if (data.status === '{{ constant('\\App\\Enum\\Export\\ExportStatusEnum::DONE') }}') {
-                        window.location.reload();
-                    } else if (data.status === '{{ constant('\\App\\Enum\\Export\\ExportStatusEnum::PROCESSING') }}') {
-                        $statusProgress.html('Processing... ('+data.percentage + '%)');
-                    } else if (data.status === '{{ constant('\\App\\Enum\\Export\\ExportStatusEnum::ERROR') }}') {
-                        clearInterval(interval);
-                    }
-                });
-            }, 5000);
+            {% if exportDelegationsRequest.status != constant('\\App\\Enum\\Export\\ExportStatusEnum::DONE') %}
+                const interval = setInterval(function () {
+                    $.get(url, function (data) {
+                        if (data.status === '{{ constant('\\App\\Enum\\Export\\ExportStatusEnum::DONE') }}') {
+                            window.location.reload();
+                        } else if (data.status === '{{ constant('\\App\\Enum\\Export\\ExportStatusEnum::PROCESSING') }}') {
+                            $statusProgress.html('Processing... ('+data.percentage + '%)');
+                        } else if (data.status === '{{ constant('\\App\\Enum\\Export\\ExportStatusEnum::ERROR') }}') {
+                            clearInterval(interval);
+                        }
+                    });
+                }, 5000);
+            {% endif %}
         });
     </script>
 {% endblock %}

@@ -2,10 +2,10 @@
 
 namespace App\Service\Tools;
 
+use App\Entity\Export\Delegation;
+use App\Entity\Export\Validator;
 use App\Entity\Tools\ExportDelegationsRequest;
 use App\Service\Cosmos\CosmosClientFactory;
-use App\Service\Export\ExportProcessManager;
-use App\Utils\MemoryUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -16,84 +16,62 @@ class DelegationFetcherManager
 {
     private EntityManagerInterface $entityManager;
 
-    private ExportProcessManager $exportProcessManager;
-
     private LoggerInterface $logger;
 
     private CosmosClientFactory $cosmosClientFactory;
 
-    public function __construct(EntityManagerInterface $entityManager, ExportProcessManager $exportProcessManager, CosmosClientFactory $cosmosClientFactory, LoggerInterface $logger)
+    public function __construct(EntityManagerInterface $entityManager, CosmosClientFactory $cosmosClientFactory, LoggerInterface $logger)
     {
         $this->entityManager = $entityManager;
-        $this->exportProcessManager = $exportProcessManager;
         $this->cosmosClientFactory = $cosmosClientFactory;
         $this->logger = $logger;
     }
 
-    public function fetch(ExportDelegationsRequest $exportDelegationsRequest): void
+    public function fetch(ExportDelegationsRequest $exportDelegationsRequest, Validator $validator): void
     {
-        if (!$export = $exportDelegationsRequest->getExportProcess()) {
-            $export = $this->exportProcessManager->create($exportDelegationsRequest);
-        }
         $cosmosClient = $this->cosmosClientFactory->createClientManually($exportDelegationsRequest->getApiClient());
 
+        $page = 1;
+        $offset = 0;
         $limit = 1000;
-        $connection = $this->entityManager->getConnection();
-        $statement = $connection->executeQuery('SELECT * FROM validator WHERE export_id = :exportId', ['exportId' => $export->getId()]);
-        while ($validator = $statement->fetchAssociative()) {
-            if ($validator['is_completed']) {
-                $this->logger->info(sprintf('Validator %s already completed', $validator['validator_address']));
-                continue;
+        $lastDelegator = null;
+        while (true) {
+            $this->logger->info('Fetching delegations for validator: '.$validator->getValidatorAddress().' page: '.$page);
+            $delegations = $cosmosClient->getValidatorDelegations(
+                $validator->getValidatorAddress(),
+                (string) $exportDelegationsRequest->getHeight(),
+                $limit,
+                $offset
+            );
+            if (\count($delegations->getDelegationResponses()) === 0) {
+                $this->logger->info('No delegations for validator: '.$validator->getValidatorAddress());
+                break;
             }
-
-            // Remove previous one if any
-            if ($connection->executeQuery('SELECT COUNT(*) FROM delegation WHERE validator_id = :validatorId', ['validatorId' => $validator['id']])->fetchOne()) {
-                $this->logger->info(sprintf('Removing previous delegations for validator %s', $validator['validator_address']));
-                $connection->executeQuery('DELETE FROM delegation WHERE validator_id = :validatorId', ['validatorId' => $validator['id']]);
+            if ($delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress() === $lastDelegator) {
+                $this->logger->info('No more delegations for validator: '.$validator->getValidatorAddress());
+                break;
             }
+            $lastDelegator = $delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress();
 
-            $page = 1;
-            $offset = 0;
-            $lastDelegator = null;
-            while (true) {
-                $this->logger->info('Fetching delegations for validator: '.$validator['validator_address'].' page: '.$page);
-                $delegations = $cosmosClient->getValidatorDelegations($validator['validator_address'], $export->getHeight(), $limit, $offset);
-                if (\count($delegations->getDelegationResponses()) === 0) {
-                    $this->logger->info('No delegations for validator: '.$validator['validator_address']);
-                    break;
-                }
-                if ($delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress() === $lastDelegator) {
-                    $this->logger->info('No more delegations for validator: '.$validator['validator_address']);
-                    break;
-                }
-                $lastDelegator = $delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress();
-
+            $this->entityManager->wrapInTransaction(function () use ($validator, $delegations) {
                 foreach ($delegations->getDelegationResponses() as $delegation) {
-                    $connection->executeQuery('
-                        INSERT INTO delegation (validator_id, delegator_address, shares) 
-                        VALUES (:validatorId, :delegatorAddress, :shares)', [
-                            'validatorId' => $validator['id'],
-                            'delegatorAddress' => $delegation->getDelegation()->getDelegatorAddress(),
-                            'shares' => $delegation->getBalance()->getAmount(),
-                        ]
-                    );
-                }
+                    $exportDelegation = new Delegation();
+                    $exportDelegation
+                        ->setDelegatorAddress($delegation->getDelegation()->getDelegatorAddress())
+                        ->setShares($delegation->getBalance()->getAmount())
+                    ;
 
-                if (\count($delegations->getDelegationResponses()) < $limit) {
-                    // We got to the end of our pagination - it seems
-                    break;
+                    $validator->addDelegation($exportDelegation);
                 }
+            });
 
-                $offset += $limit;
-                $page++;
+            if (\count($delegations->getDelegationResponses()) < $limit) {
+                // We got to the end of our pagination - it seems
+                break;
             }
 
-            $this->logger->info(sprintf('Validator %s completed', $validator['validator_address']));
-            $connection->executeQuery('UPDATE validator SET is_completed = 1, completed_at = NOW() WHERE id = :id', ['id' => $validator['id']]);
-
-            MemoryUtil::printMemoryUsage();
+            $offset += $limit;
+            $page++;
         }
-
-        $this->logger->info('Export completed');
     }
 }

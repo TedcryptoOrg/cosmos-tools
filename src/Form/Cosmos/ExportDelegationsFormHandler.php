@@ -3,9 +3,10 @@
 namespace App\Form\Cosmos;
 
 use App\Form\AbstractFormHandler;
-use App\Message\Tools\ExportDelegationMessage;
+use App\Message\Export\FetchValidatorDelegationsMessage;
 use App\Model\Form\FormHandlerResponse;
 use App\Service\Cosmos\CosmosClientFactory;
+use App\Service\Export\ExportProcessManager;
 use App\Service\Form\FormHandlerResponseInterface;
 use App\Service\Tools\ExportDelegationsManager;
 use Symfony\Component\Form\FormError;
@@ -22,10 +23,13 @@ class ExportDelegationsFormHandler extends AbstractFormHandler
 
     private CosmosClientFactory $cosmosClientFactory;
 
-    public function __construct(FormFactoryInterface $formFactory, ExportDelegationsManager $exportDelegationsManager, MessageBusInterface $bus, CosmosClientFactory $cosmosClientFactory)
+    private ExportProcessManager $exportProcessManager;
+
+    public function __construct(FormFactoryInterface $formFactory, ExportProcessManager $exportProcessManager, ExportDelegationsManager $exportDelegationsManager, MessageBusInterface $bus, CosmosClientFactory $cosmosClientFactory)
     {
         parent::__construct($formFactory);
 
+        $this->exportProcessManager = $exportProcessManager;
         $this->exportDelegationManager = $exportDelegationsManager;
         $this->bus = $bus;
         $this->cosmosClientFactory = $cosmosClientFactory;
@@ -64,7 +68,15 @@ class ExportDelegationsFormHandler extends AbstractFormHandler
 
         $exportDelegationRequest = $this->exportDelegationManager->createRequest($formData);
 
-        $this->bus->dispatch(new ExportDelegationMessage($exportDelegationRequest->getId()));
+        $export = $this->exportProcessManager->create($exportDelegationRequest);
+        if ($export->isCompleted()) {
+            // Export was already completed for someone else so has been associated
+            $this->exportDelegationManager->flagAsDone($exportDelegationRequest);
+        } else {
+            foreach ($export->getValidators() as $validator) {
+                $this->bus->dispatch(new FetchValidatorDelegationsMessage($exportDelegationRequest->getId(), $validator->getId()));
+            }
+        }
 
         return new FormHandlerResponse($form, true, ['exportDelegationRequest' => $exportDelegationRequest]);
     }

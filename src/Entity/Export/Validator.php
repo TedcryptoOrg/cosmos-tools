@@ -3,6 +3,7 @@
 namespace App\Entity\Export;
 
 use App\Entity\Tools\ExportDelegationsRequest;
+use App\Enum\Export\ExportStatusEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -51,15 +52,42 @@ class Validator
     private ?\DateTime $completedAt = null;
 
     /**
+     * @ORM\Column(name="status", type="string")
+     */
+    private string $status = ExportStatusEnum::PENDING;
+
+    /**
+     * @ORM\Column(name="is_error", type="boolean", options={"default": false})
+     */
+    private bool $isError = false;
+
+    /**
+     * @ORM\Column(name="error_message", type="text", nullable=true)
+     */
+    private ?string $errorMessage = null;
+
+    /**
      * @var array|Collection|Delegation[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Export\Delegation", mappedBy="validator", cascade={"all"})
      */
     private array|Collection $delegations;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private \DateTime $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private \DateTime $updatedAt;
+
     public function __construct()
     {
         $this->delegations = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -162,6 +190,61 @@ class Validator
             $this->delegations->removeElement($delegation);
         }
 
+        return $this;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): Validator
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function isError(): bool
+    {
+        return $this->isError;
+    }
+
+    public function setIsError(bool $isError): Validator
+    {
+        $this->isError = $isError;
+        return $this;
+    }
+
+    public function getErrorMessage(): ?string
+    {
+        return $this->errorMessage;
+    }
+
+    public function setErrorMessage(?string $errorMessage): Validator
+    {
+        $this->errorMessage = $errorMessage;
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): Validator
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): Validator
+    {
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 }

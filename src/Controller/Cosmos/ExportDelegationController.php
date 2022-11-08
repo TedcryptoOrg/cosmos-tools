@@ -115,6 +115,10 @@ class ExportDelegationController extends BaseController
             }
 
             $percentage = (int) round($completed / $numValidators * 100);
+            if ($percentage === 100) {
+                $this->exportDelegationsManager->flagAsDone($exportDelegationsRequest);
+                $status = ExportStatusEnum::DONE;
+            }
         }
 
         return new JsonResponse([

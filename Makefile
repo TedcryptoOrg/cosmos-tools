@@ -185,4 +185,4 @@ rabbit_fabrics:
 
 ## Consume messages
 messenger_consume:
-	docker-compose exec php bin/console messenger:consume-messages amqp --limit=10
+	docker-compose exec php bin/console messenger:consume async --limit=1000 -vvv

@@ -2,16 +2,10 @@
 
 namespace App\Service\Tools;
 
-use App\Entity\Export\Delegation;
 use App\Entity\Tools\ExportDelegationsRequest;
 use App\Enum\Export\ExportStatusEnum;
-use App\Message\Tools\ExportDelegationMessage;
-use App\Service\Cosmos\CosmosClientFactory;
-use App\Service\CosmosDirectory\ValidatorCosmosDirectoryClient;
-use App\Service\Export\ExportProcessManager;
-use App\Utils\MemoryUtil;
+use App\Message\Export\FetchValidatorDelegationsMessage;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class ExportDelegationsManager
@@ -20,12 +14,9 @@ class ExportDelegationsManager
 
     private MessageBusInterface $bus;
 
-    private DelegationFetcherManager $delegationFetcherManager;
-
-    public function __construct(EntityManagerInterface $entityManager, DelegationFetcherManager $delegationFetcherManager, MessageBusInterface $bus)
+    public function __construct(EntityManagerInterface $entityManager, MessageBusInterface $bus)
     {
         $this->entityManager = $entityManager;
-        $this->delegationFetcherManager = $delegationFetcherManager;
         $this->bus = $bus;
     }
 
@@ -50,10 +41,10 @@ class ExportDelegationsManager
         return $exportDelegationsRequest;
     }
 
-    public function flagProcessing(ExportDelegationsRequest $exportDelegationsRequest, string $status): void
+    public function flagProcessing(ExportDelegationsRequest $exportDelegationsRequest): void
     {
         $exportDelegationsRequest
-            ->setStatus($status)
+            ->setStatus(ExportStatusEnum::PROCESSING)
             ->setUpdatedAt(new \DateTime())
         ;
         $this->entityManager->flush();
@@ -78,15 +69,6 @@ class ExportDelegationsManager
         $this->entityManager->flush();
     }
 
-    public function fetchAndSave(ExportDelegationsRequest $exportDelegationsRequest): void
-    {
-        if ($exportDelegationsRequest->getStatus() === ExportStatusEnum::DONE) {
-            throw new \Exception('This request has already been processed');
-        }
-
-        $this->delegationFetcherManager->fetch($exportDelegationsRequest);
-    }
-
     public function cancel(ExportDelegationsRequest $exportDelegationsRequest): void
     {
         $exportDelegationsRequest
@@ -108,6 +90,12 @@ class ExportDelegationsManager
         ;
         $this->entityManager->flush();
 
-        $this->bus->dispatch(new ExportDelegationMessage($exportDelegationsRequest->getId()));
+        foreach ($exportDelegationsRequest->getExportProcess()->getValidators() as $validator) {
+            if ($validator->getStatus() === ExportStatusEnum::DONE) {
+                continue;
+            }
+
+            $this->bus->dispatch(new FetchValidatorDelegationsMessage($exportDelegationsRequest->getId(), $validator->getId()));
+        }
     }
 }
