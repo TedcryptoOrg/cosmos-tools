@@ -47,7 +47,7 @@ class ExportProcess
     /**
      * @var ExportDelegationsRequest[]|Collection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Tools\ExportDelegationsRequest", mappedBy="export", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Tools\ExportDelegationsRequest", mappedBy="exportProcess", cascade={"all"})
      */
     private array|Collection $exportDelegationsRequests;
 
