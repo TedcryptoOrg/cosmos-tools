@@ -2,6 +2,7 @@
 
 namespace App\Entity\Tools;
 
+use App\Entity\Export\ExportProcess;
 use App\Enum\Export\ExportStatusEnum;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,14 +20,20 @@ class ExportDelegationsRequest
     private ?int $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Export\ExportProcess", inversedBy="exportDelegationsRequest")
+     * @ORM\JoinColumn(name="export_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private ?ExportProcess $exportProcess;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private string $network;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
-    private ?string $apiClient;
+    private string $apiClient;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -34,9 +41,9 @@ class ExportDelegationsRequest
     private ?string $email;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
-    private ?string $height;
+    private string $height;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -47,11 +54,6 @@ class ExportDelegationsRequest
      * @ORM\Column(type="string", length=255, unique=true)
      */
     private string $token;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $downloadLink;
 
     /**
      * @ORM\Column(name="error", type="string", length=255, nullable=true)
@@ -83,6 +85,17 @@ class ExportDelegationsRequest
     public function setId(?int $id): ExportDelegationsRequest
     {
         $this->id = $id;
+        return $this;
+    }
+
+    public function getExportProcess(): ?ExportProcess
+    {
+        return $this->exportProcess;
+    }
+
+    public function setExportProcess(?ExportProcess $exportProcess): ExportDelegationsRequest
+    {
+        $this->exportProcess = $exportProcess;
         return $this;
     }
 
@@ -149,17 +162,6 @@ class ExportDelegationsRequest
     public function setToken(string $token): ExportDelegationsRequest
     {
         $this->token = $token;
-        return $this;
-    }
-
-    public function getDownloadLink(): ?string
-    {
-        return $this->downloadLink;
-    }
-
-    public function setDownloadLink(?string $downloadLink): ExportDelegationsRequest
-    {
-        $this->downloadLink = $downloadLink;
         return $this;
     }
 

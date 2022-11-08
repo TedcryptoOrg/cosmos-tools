@@ -27,7 +27,7 @@ class ExportDelegationsMailer
         $this->router = $router;
     }
 
-    public function sendDownloadEmail(ExportDelegationsRequest $exportDelegationsRequest): void
+    public function sendDoneEmail(ExportDelegationsRequest $exportDelegationsRequest): void
     {
         if (!$exportDelegationsRequest->getEmail()) {
             return;
@@ -37,17 +37,21 @@ class ExportDelegationsMailer
             ['token' => $exportDelegationsRequest->getToken()],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
+        $downloadLink = $this->router->generate(
+            'app_cosmos_export_delegations_download',
+            ['token' => $exportDelegationsRequest->getToken()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
         $email = (new Email())
             ->to($exportDelegationsRequest->getEmail())
             ->subject('Your export is ready')
-            ->text('Your export is completed and can be downloaded here: '.$exportDelegationsRequest->getDownloadLink())
+            ->text('Your export is completed and can be downloaded here: '.$downloadLink)
             ->html('
                 <p>Your export: '.$fullLink.'</p>
                 <p>
-                    Your export is completed and can be download <a href="'.$exportDelegationsRequest->getDownloadLink().'">here</a>.
+                    Your export is completed and can be download <a href="'.$downloadLink.'">here</a>.
                 </p>
-                <p>If you are having problems with the link, try access it directly here: '.$exportDelegationsRequest->getDownloadLink().'</p>
-                <p>The storage where your file is located is ephemeral, which means this file will be removed at any time the machine reboots. Please download as soon as possible!</p>
+                <p>The export is saved in the database, time to time we are going to clean up to save space. Please download at your earliest convenience!</p>
                 <p>Thank you!</p>    
             ');
 

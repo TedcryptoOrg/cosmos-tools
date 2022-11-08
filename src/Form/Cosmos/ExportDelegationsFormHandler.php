@@ -3,15 +3,17 @@
 namespace App\Form\Cosmos;
 
 use App\Form\AbstractFormHandler;
-use App\Message\Tools\ExportDelegationMessage;
+use App\Message\Export\FetchValidatorDelegationsMessage;
 use App\Model\Form\FormHandlerResponse;
+use App\Service\Cosmos\CosmosClientFactory;
+use App\Service\Export\ExportProcessManager;
 use App\Service\Form\FormHandlerResponseInterface;
 use App\Service\Tools\ExportDelegationsManager;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExportDelegationsFormHandler extends AbstractFormHandler
 {
@@ -19,12 +21,18 @@ class ExportDelegationsFormHandler extends AbstractFormHandler
 
     private MessageBusInterface $bus;
 
-    public function __construct(FormFactoryInterface $formFactory, ExportDelegationsManager $exportDelegationsManager, MessageBusInterface $bus)
+    private CosmosClientFactory $cosmosClientFactory;
+
+    private ExportProcessManager $exportProcessManager;
+
+    public function __construct(FormFactoryInterface $formFactory, ExportProcessManager $exportProcessManager, ExportDelegationsManager $exportDelegationsManager, MessageBusInterface $bus, CosmosClientFactory $cosmosClientFactory)
     {
         parent::__construct($formFactory);
 
+        $this->exportProcessManager = $exportProcessManager;
         $this->exportDelegationManager = $exportDelegationsManager;
         $this->bus = $bus;
+        $this->cosmosClientFactory = $cosmosClientFactory;
     }
 
     public function create(array $options = []): FormInterface
@@ -32,15 +40,43 @@ class ExportDelegationsFormHandler extends AbstractFormHandler
         return $this->formFactory->create(ExportDelegationsType::class, null, $options);
     }
 
-    public function configureOptions(OptionsResolver $optionsResolver)
-    {
-    }
-
     protected function handleValidForm(Request $request, FormInterface $form, array $options): FormHandlerResponseInterface
     {
-        $exportDelegationRequest = $this->exportDelegationManager->createRequest($form->getData());
+        $formData = $form->getData();
+        $serverAddress = $formData['custom_api_server'] ?: $formData['api_client'];
+        $server = $this->cosmosClientFactory->createClientManually($serverAddress);
 
-        $this->bus->dispatch(new ExportDelegationMessage($exportDelegationRequest->getId()));
+        if (!$formData['height']) {
+            try {
+                $formData['height'] = $server->getLatestBlockHeight();
+            } catch (\Throwable) {
+                $error = 'Unable to get latest block height from the server. Please try again later.';
+                $form->get('height')->addError(new FormError($error));
+
+                return new FormHandlerResponse($form, false, ['error' => $error]);
+            }
+        }
+
+        try {
+            $server->getBlockByHeight($formData['height']);
+        } catch (\Throwable) {
+            $error = 'Unable to get block at height ' . $formData['height'] . ' from the server. Please try again later.';
+            $form->get('height')->addError(new FormError($error));
+
+            return new FormHandlerResponse($form, false, ['error' => $error]);
+        }
+
+        $exportDelegationRequest = $this->exportDelegationManager->createRequest($formData);
+
+        $export = $this->exportProcessManager->create($exportDelegationRequest);
+        if ($export->isCompleted()) {
+            // Export was already completed for someone else so has been associated
+            $this->exportDelegationManager->flagAsDone($exportDelegationRequest);
+        } else {
+            foreach ($export->getValidators() as $validator) {
+                $this->bus->dispatch(new FetchValidatorDelegationsMessage($exportDelegationRequest->getId(), $validator->getId()));
+            }
+        }
 
         return new FormHandlerResponse($form, true, ['exportDelegationRequest' => $exportDelegationRequest]);
     }

@@ -14,18 +14,11 @@
                         <b>Network: </b>{{ exportDelegationsRequest.network }}<br>
                         <b>Api Client: </b>{{ exportDelegationsRequest.apiClient ?: 'Random Public One' }}<br>
                         <b>Height: </b>{{ exportDelegationsRequest.height ?: 'latest' }}<br>
-                        <b>Status: </b>{{ exportDelegationsRequest.status }}<br/>
+                        <b>Status: </b><span id="status-progress">{{ exportDelegationsRequest.status }}</span><br/>
                         {% if exportDelegationsRequest.status == constant('\\App\\Enum\\Export\\ExportStatusEnum::ERROR') %}
                             <b>Error: </b>{{ exportDelegationsRequest.error }}<br/>
                         {% endif %}
                         <b>Email: </b>{{ exportDelegationsRequest.email|default('n.a.') }}<br/>
-                        <b>Download: </b>
-                            {% if exportDelegationsRequest.downloadLink is empty %}
-                                <i>Not available yet</i>
-                            {% else %}
-                                <a href="{{ exportDelegationsRequest.downloadLink }}">Download</a>
-                            {% endif %}
-                        <br/>
                         <b>Created at: </b>{{ exportDelegationsRequest.createdAt|date('Y-m-d H:i:s') }}<br/>
                         <b>Updated at: </b>{{ exportDelegationsRequest.updatedAt|date('Y-m-d H:i:s') }}<br/>
                     </div>
@@ -38,6 +31,11 @@
                         {% if exportDelegationsRequest.status == constant('\\App\\Enum\\Export\\ExportStatusEnum::PENDING') %}
                             <a href="{{ path('app_cosmos_export_delegations_cancel', {token: exportDelegationsRequest.token}) }}" class="btn btn-danger">
                                 Cancel
+                            </a>
+                        {% endif %}
+                        {% if exportDelegationsRequest.status == constant('\\App\\Enum\\Export\\ExportStatusEnum::DONE') %}
+                            <a href="{{ path('app_cosmos_export_delegations_download', {token: exportDelegationsRequest.token}) }}" class="btn btn-danger">
+                                Download
                             </a>
                         {% endif %}
                     </div>
@@ -57,5 +55,24 @@
 {% endblock %}
 
 {% block javascripts_footer %}
+    <script>
+        $(document).ready(function () {
+            const url = '{{ path('app_cosmos_export_delegations_status', {token: exportDelegationsRequest.token}) }}';
+            const $statusProgress = $('#status-progress');
 
+            {% if exportDelegationsRequest.status != constant('\\App\\Enum\\Export\\ExportStatusEnum::DONE') %}
+                const interval = setInterval(function () {
+                    $.get(url, function (data) {
+                        if (data.status === '{{ constant('\\App\\Enum\\Export\\ExportStatusEnum::DONE') }}') {
+                            window.location.reload();
+                        } else if (data.status === '{{ constant('\\App\\Enum\\Export\\ExportStatusEnum::PROCESSING') }}') {
+                            $statusProgress.html('Processing... ('+data.percentage + '%)');
+                        } else if (data.status === '{{ constant('\\App\\Enum\\Export\\ExportStatusEnum::ERROR') }}') {
+                            clearInterval(interval);
+                        }
+                    });
+                }, 5000);
+            {% endif %}
+        });
+    </script>
 {% endblock %}
