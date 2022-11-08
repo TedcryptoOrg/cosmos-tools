@@ -7,7 +7,7 @@ if [ "${1#-}" != "$1" ]; then
 fi
 
 # Run supervisord for messenger
-supervisord &
+#supervisord &
 
 chown -R www-data:www-data var
 

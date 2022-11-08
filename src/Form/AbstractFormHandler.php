@@ -7,6 +7,7 @@ use App\Service\Form\FormHandlerResponseInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractFormHandler implements FormHandlerInterface
 {
@@ -25,6 +26,10 @@ abstract class AbstractFormHandler implements FormHandlerInterface
         }
 
         return $this->handleInvalidForm($request, $form, $options);
+    }
+
+    public function configureOptions(OptionsResolver $optionsResolver)
+    {
     }
 
     abstract protected function handleValidForm(Request $request, FormInterface $form, array $options): FormHandlerResponseInterface;

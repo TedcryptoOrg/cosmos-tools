@@ -6,7 +6,6 @@ use App\Enum\Export\ExportStatusEnum;
 use App\Message\Tools\ExportDelegationMessage;
 use App\Service\Tools\ExportDelegationsMailer;
 use App\Service\Tools\ExportDelegationsManager;
-use App\Service\Uploader\TedcryptoTransfer;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,17 +23,14 @@ class ExportDelegationMessageHandler
 
     private ExportDelegationsMailer $exportDelegationsMailer;
 
-    private TedcryptoTransfer $tedcryptoTransfer;
-
     private LoggerInterface $logger;
 
-    public function __construct(ManagerRegistry $managerRegistry, EntityManagerInterface $entityManager, ExportDelegationsManager $exportDelegationsManager, ExportDelegationsMailer $exportDelegationsMailer, TedcryptoTransfer $tedcryptoTransfer, LoggerInterface $logger)
+    public function __construct(ManagerRegistry $managerRegistry, EntityManagerInterface $entityManager, ExportDelegationsManager $exportDelegationsManager, ExportDelegationsMailer $exportDelegationsMailer, LoggerInterface $logger)
     {
         $this->managerRegistry = $managerRegistry;
         $this->entityManager = $entityManager;
         $this->exportDelegationsManager = $exportDelegationsManager;
         $this->exportDelegationsMailer = $exportDelegationsMailer;
-        $this->tedcryptoTransfer = $tedcryptoTransfer;
         $this->logger = $logger;
     }
 
@@ -42,26 +38,19 @@ class ExportDelegationMessageHandler
     {
         $exportDelegationRequest = $this->exportDelegationsManager->find($message->getExportDelegationsRequestId());
         $this->logger->info(sprintf('[Request: %s] Processing export delegation request', $exportDelegationRequest->getId()));
-        $this->exportDelegationsManager->flagProcessing($exportDelegationRequest, ExportStatusEnum::PROCESSING);
 
         try {
+            $this->exportDelegationsManager->flagProcessing($exportDelegationRequest, ExportStatusEnum::PROCESSING);
+
             $this->logger->info(sprintf('[Request: %s] Exporting delegations...', $exportDelegationRequest->getId()));
-            $exportLocation = $this->exportDelegationsManager->exportDelegations($exportDelegationRequest);
-            $this->logger->info(sprintf('[Request: %s] Exported and now uploading..', $exportDelegationRequest->getId()));
+            $this->exportDelegationsManager->fetchAndSave($exportDelegationRequest);
 
-            $downloadLink = $this->tedcryptoTransfer->upload(
-                $exportLocation,
-                sprintf('%s_delegations%s', $exportDelegationRequest->getNetwork(), $exportDelegationRequest->getHeight() ? '_'.$exportDelegationRequest->getHeight() : '')
-            );
+            $this->exportDelegationsManager->flagAsDone($exportDelegationRequest);
+            $this->logger->info(sprintf('[Request: %s] Exported', $exportDelegationRequest->getId()));
 
-            // Reconnect if lost access
-            $this->pingConnection();
-
-            $this->exportDelegationsManager->flagAsDone($exportDelegationRequest, $downloadLink);
-            $this->logger->info(sprintf('[Request: %s] Upload completed. Download link: %s', $exportDelegationRequest->getId(), $exportDelegationRequest->getDownloadLink()));
-
-            $this->exportDelegationsMailer->sendDownloadEmail($exportDelegationRequest);
+            $this->exportDelegationsMailer->sendDoneEmail($exportDelegationRequest);
         } catch (\Exception $exception) {
+            $this->pingConnection();
             $this->exportDelegationsManager->flagAsErrored($exportDelegationRequest, $exception->getMessage());
             $this->exportDelegationsMailer->sendErrorEmail($exportDelegationRequest);
         }
