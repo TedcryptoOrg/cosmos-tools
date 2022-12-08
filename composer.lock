@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9a1d60aad2cb55e35bda1301c9bd5957",
+    "content-hash": "b3791a78e81736ec51c9c4685bb5840a",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -8940,6 +8940,43 @@
                 }
             ],
             "time": "2022-10-07T08:04:03+00:00"
+        },
+        {
+            "name": "tedcrypto/cosmos-accounts",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TedcryptoOrg/cosmos-accounts.git",
+                "reference": "d1fa46d8096d88566076c059102b8b365f9f2447"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TedcryptoOrg/cosmos-accounts/zipball/d1fa46d8096d88566076c059102b8b365f9f2447",
+                "reference": "d1fa46d8096d88566076c059102b8b365f9f2447",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "TedcryptoOrg\\CosmosAccounts\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Small library with mixed of tools to manipulate cosmos accounts addresses",
+            "support": {
+                "issues": "https://github.com/TedcryptoOrg/cosmos-accounts/issues",
+                "source": "https://github.com/TedcryptoOrg/cosmos-accounts/tree/v1.0"
+            },
+            "time": "2022-12-08T22:01:26+00:00"
         },
         {
             "name": "twig/extra-bundle",

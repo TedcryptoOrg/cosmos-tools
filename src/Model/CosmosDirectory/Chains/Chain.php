@@ -20,6 +20,8 @@ class Chain
 
     private string $status;
 
+    private string $bech32Prefix;
+
     private string $symbol;
 
     private string $display;
@@ -131,6 +133,17 @@ class Chain
     public function setStatus(string $status): Chain
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getBech32Prefix(): string
+    {
+        return $this->bech32Prefix;
+    }
+
+    public function setBech32Prefix(string $bech32Prefix): Chain
+    {
+        $this->bech32Prefix = $bech32Prefix;
         return $this;
     }
 

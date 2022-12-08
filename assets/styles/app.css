@@ -10,9 +10,6 @@ html {
 main {
     height: 100vh;
     height: -webkit-fill-available;
-    max-height: 100vh;
-    overflow-x: auto;
-    overflow-y: hidden;
 }
 
 .dropdown-toggle { outline: 0; }
@@ -82,7 +79,7 @@ main {
 
 .b-example-vr {
     flex-shrink: 0;
-    width: 1.5rem;
+    width: 0.1rem;
     height: 100vh;
 }
 
@@ -107,4 +104,8 @@ main {
     text-align: center;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
+}
+
+.nav .nav-item {
+    padding-top: 4px;
 }

@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row" style="padding-top: 50px">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Cosmos Accounts</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{ form_start(form) }}
+                        {{ form_errors(form) }}
+                            {{ form_rest(form) }}
+                            <div class="form-group pull-right">
+                                <button type="submit" class="btn btn-primary">Check accounts</button>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12" id="cosmos-accounts-container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Accounts</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-striped" id="cosmos-accounts-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts_footer %}
+    <script>
+        $(document).ready(function (e){
+            const $form = $('form[name="{{ form.vars.id }}"]');
+            const $address = $('#{{ form.address.vars.id }}');
+            const $cosmosAccountsContainer = $('#cosmos-accounts-container').hide();
+            const $cosmosAccountsTable = $('#cosmos-accounts-table');
+
+            $form.submit(function (e){
+                e.preventDefault();
+                if ($address.val() === '') {
+                    return;
+                }
+
+                $.ajax({
+                    url: '{{ path('app_cosmos_accounts_fetch') }}',
+                    method: 'POST',
+                    data: {
+                        address: $address.val()
+                    },
+                    success: function (data) {
+                        $cosmosAccountsContainer.show();
+                        $cosmosAccountsTable.find('tbody').html('');
+                        $.each(data, function (idx, chain) {
+                            $cosmosAccountsTable.find('tbody').append(
+                                $("<tr/>")
+                                    .append(
+                                        $("<td/>").text(chain.chainName),
+                                        $("<td/>").text(chain.address)
+                                    )
+                            );
+                        });
+
+                        console.log(data);
+                    },
+                    error: function (data) {
+                        alert(data.error)
+                        console.log(data);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
