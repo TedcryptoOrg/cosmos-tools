@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "ES2015",
+    "declaration": true,
+    "outDir": "./assets/lib",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "moduleResolution": "node"
+
+  },
+  "include": ["./assets/src"],
+  "exclude": ["node_modules", "**/__tests__/*", "tests"]
+}
