@@ -13,7 +13,10 @@ import './styles/app.css';
 // start the Stimulus application
 import './bootstrap';
 
+import './src/cosmos-signer'
+
 // Other js
 import './js/app.js';
+import './js/pages/signer.js';
 
 

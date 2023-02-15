@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row" style="padding-top: 50px">
+            <div class="col-sm-12">
+                <h1>Signer</h1>
+                {{ form_start(form) }}
+                {{ form_errors(form) }}
+                {{ form_rest(form) }}
+                <div class="col-sm-12">
+                    <button class="btn btn-primary" id="js-sign-button">Sign</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts_footer %}
+    <script>
+        $(document).ready(function (e){
+        });
+    </script>
+{% endblock %}
