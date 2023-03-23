@@ -12,6 +12,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.13",
+        "eluceo/ical": "^2.11",
         "guzzlehttp/guzzle": "^7.0",
         "jms/serializer": "^3.18",
         "phpdocumentor/reflection-docblock": "^5.3",
