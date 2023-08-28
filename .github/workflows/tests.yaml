@@ -15,12 +15,6 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Docker login"
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
       - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
         with:
