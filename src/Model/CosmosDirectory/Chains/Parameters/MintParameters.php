@@ -24,6 +24,7 @@ class MintParameters
     public function setMintDenom(string $mintDenom): MintParameters
     {
         $this->mintDenom = $mintDenom;
+
         return $this;
     }
 
@@ -35,6 +36,7 @@ class MintParameters
     public function setInflationRateChange(string $inflationRateChange): MintParameters
     {
         $this->inflationRateChange = $inflationRateChange;
+
         return $this;
     }
 
@@ -46,6 +48,7 @@ class MintParameters
     public function setInflationMax(string $inflationMax): MintParameters
     {
         $this->inflationMax = $inflationMax;
+
         return $this;
     }
 
@@ -57,6 +60,7 @@ class MintParameters
     public function setInflationMin(string $inflationMin): MintParameters
     {
         $this->inflationMin = $inflationMin;
+
         return $this;
     }
 
@@ -68,6 +72,7 @@ class MintParameters
     public function setGoalBonded(string $goalBonded): MintParameters
     {
         $this->goalBonded = $goalBonded;
+
         return $this;
     }
 
@@ -79,6 +84,7 @@ class MintParameters
     public function setBlocksPerYear(string $blocksPerYear): MintParameters
     {
         $this->blocksPerYear = $blocksPerYear;
+
         return $this;
     }
 }

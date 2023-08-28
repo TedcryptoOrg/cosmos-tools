@@ -6,11 +6,8 @@ use App\Entity\Export\Validator;
 
 class ExportValidatorCompletedEvent
 {
-    private Validator $validator;
-
-    public function __construct(Validator $validator)
+    public function __construct(private readonly Validator $validator)
     {
-        $this->validator = $validator;
     }
 
     public function getValidator(): Validator

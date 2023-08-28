@@ -17,22 +17,9 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class ExportDelegationsFormHandler extends AbstractFormHandler
 {
-    private ExportDelegationsManager $exportDelegationManager;
-
-    private MessageBusInterface $bus;
-
-    private CosmosClientFactory $cosmosClientFactory;
-
-    private ExportProcessManager $exportProcessManager;
-
-    public function __construct(FormFactoryInterface $formFactory, ExportProcessManager $exportProcessManager, ExportDelegationsManager $exportDelegationsManager, MessageBusInterface $bus, CosmosClientFactory $cosmosClientFactory)
+    public function __construct(FormFactoryInterface $formFactory, private readonly ExportProcessManager $exportProcessManager, private readonly ExportDelegationsManager $exportDelegationManager, private readonly MessageBusInterface $bus, private readonly CosmosClientFactory $cosmosClientFactory)
     {
         parent::__construct($formFactory);
-
-        $this->exportProcessManager = $exportProcessManager;
-        $this->exportDelegationManager = $exportDelegationsManager;
-        $this->bus = $bus;
-        $this->cosmosClientFactory = $cosmosClientFactory;
     }
 
     public function create(array $options = []): FormInterface
@@ -43,10 +30,10 @@ class ExportDelegationsFormHandler extends AbstractFormHandler
     protected function handleValidForm(Request $request, FormInterface $form, array $options): FormHandlerResponseInterface
     {
         $formData = $form->getData();
-        $serverAddress = $formData['custom_api_server'] ?: $formData['api_client'];
+        $serverAddress = $formData['custom_api_server'] ?? $formData['api_client'];
         $server = $this->cosmosClientFactory->createClientManually($serverAddress);
 
-        if (!$formData['height']) {
+        if (null === $formData['height']) {
             try {
                 $formData['height'] = $server->getLatestBlockHeight();
             } catch (\Throwable) {
@@ -60,7 +47,7 @@ class ExportDelegationsFormHandler extends AbstractFormHandler
         try {
             $server->getBlockByHeight($formData['height']);
         } catch (\Throwable) {
-            $error = 'Unable to get block at height ' . $formData['height'] . ' from the server. Please try again later.';
+            $error = 'Unable to get block at height '.$formData['height'].' from the server. Please try again later.';
             $form->get('height')->addError(new FormError($error));
 
             return new FormHandlerResponse($form, false, ['error' => $error]);
@@ -74,7 +61,12 @@ class ExportDelegationsFormHandler extends AbstractFormHandler
             $this->exportDelegationManager->flagAsDone($exportDelegationRequest);
         } else {
             foreach ($export->getValidators() as $validator) {
-                $this->bus->dispatch(new FetchValidatorDelegationsMessage($exportDelegationRequest->getId(), $validator->getId()));
+                $this->bus->dispatch(
+                    new FetchValidatorDelegationsMessage(
+                        $exportDelegationRequest->getId(),
+                        $validator->getId()
+                    )
+                );
             }
         }
 

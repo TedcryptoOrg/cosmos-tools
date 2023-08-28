@@ -10,6 +10,8 @@ class Chains
 
     /**
      * @Serializer\Type("array<App\Model\CosmosDirectory\Chains\Chain>")
+     *
+     * @var array<Chain>
      */
     private array $chains;
 
@@ -21,6 +23,7 @@ class Chains
     public function setRepository(Repository $repository): Chains
     {
         $this->repository = $repository;
+
         return $this;
     }
 
@@ -32,9 +35,13 @@ class Chains
         return $this->chains;
     }
 
+    /**
+     * @param array<Chain> $chains
+     */
     public function setChains(array $chains): Chains
     {
         $this->chains = $chains;
+
         return $this;
     }
 }

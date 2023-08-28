@@ -12,24 +12,15 @@ use Psr\Log\LoggerInterface;
 
 class ExportProcessManager
 {
-    private EntityManagerInterface $entityManager;
-
-    private LoggerInterface $logger;
-
-    private ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient;
-
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly LoggerInterface $logger, private readonly ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient)
     {
-        $this->entityManager = $entityManager;
-        $this->logger = $logger;
-        $this->validatorCosmosDirectoryClient = $validatorCosmosDirectoryClient;
     }
 
     public function create(ExportDelegationsRequest $request): ExportProcess
     {
         /** @var ExportProcess|null $export */
         $export = $this->getRepository()->findOneBy(['network' => $request->getNetwork(), 'height' => $request->getHeight()]);
-        if ($export) {
+        if (null !== $export) {
             $this->logger->info('We found one valid export already for this request');
             $export->addExportDelegationsRequest($request);
             $this->entityManager->flush();
@@ -46,7 +37,7 @@ class ExportProcessManager
             ;
 
             $validators = $this->validatorCosmosDirectoryClient->getChain($request->getNetwork());
-            $this->logger->info('Found '.count($validators).' validators for network: '. $request->getNetwork());
+            $this->logger->info('Found '.count($validators).' validators for network: '.$request->getNetwork());
 
             foreach ($validators as $validator) {
                 $validatorEntity = new Validator();

@@ -11,25 +11,13 @@ use Symfony\Component\Routing\RouterInterface;
 
 class ExportDelegationsMailer
 {
-    private ExportDelegationsManager $exportDelegationsManager;
-
-    private MailerInterface $mailer;
-
-    private LoggerInterface $logger;
-
-    private RouterInterface $router;
-
-    public function __construct(ExportDelegationsManager $exportDelegationsManager, MailerInterface $mailer, LoggerInterface $logger, RouterInterface $router)
+    public function __construct(private readonly ExportDelegationsManager $exportDelegationsManager, private readonly MailerInterface $mailer, private readonly LoggerInterface $logger, private readonly RouterInterface $router)
     {
-        $this->exportDelegationsManager = $exportDelegationsManager;
-        $this->mailer = $mailer;
-        $this->logger = $logger;
-        $this->router = $router;
     }
 
     public function sendDoneEmail(ExportDelegationsRequest $exportDelegationsRequest): void
     {
-        if (!$exportDelegationsRequest->getEmail()) {
+        if (null === $exportDelegationsRequest->getEmail()) {
             return;
         }
         $fullLink = $this->router->generate(
@@ -65,7 +53,7 @@ class ExportDelegationsMailer
 
     public function sendErrorEmail(ExportDelegationsRequest $exportDelegationsRequest): void
     {
-        if (!$exportDelegationsRequest->getEmail()) {
+        if (null === $exportDelegationsRequest->getEmail()) {
             return;
         }
         $fullLink = $this->router->generate(

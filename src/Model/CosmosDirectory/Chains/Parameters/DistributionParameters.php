@@ -20,6 +20,7 @@ class DistributionParameters
     public function setCommunityTax(string $communityTax): DistributionParameters
     {
         $this->communityTax = $communityTax;
+
         return $this;
     }
 
@@ -31,6 +32,7 @@ class DistributionParameters
     public function setBaseProposerReward(string $baseProposerReward): DistributionParameters
     {
         $this->baseProposerReward = $baseProposerReward;
+
         return $this;
     }
 
@@ -42,6 +44,7 @@ class DistributionParameters
     public function setBonusProposerReward(string $bonusProposerReward): DistributionParameters
     {
         $this->bonusProposerReward = $bonusProposerReward;
+
         return $this;
     }
 
@@ -53,6 +56,7 @@ class DistributionParameters
     public function setWithdrawAddrEnabled(bool $withdrawAddrEnabled): DistributionParameters
     {
         $this->withdrawAddrEnabled = $withdrawAddrEnabled;
+
         return $this;
     }
 }

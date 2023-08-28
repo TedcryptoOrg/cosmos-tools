@@ -14,16 +14,21 @@ class BaseIntegrationTestCase extends KernelTestCase
 
     protected function setupFixtures(): void
     {
-
     }
 
     protected function getService(string $serviceName): object
     {
-        return static::getContainer()->get($serviceName);
+        $service = static::getContainer()->get($serviceName);
+        \assert(null !== $service);
+
+        return $service;
     }
 
     protected function getEntityManager(): EntityManagerInterface
     {
-        return $this->getService(EntityManagerInterface::class);
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $this->getService(EntityManagerInterface::class);
+
+        return $entityManager;
     }
 }

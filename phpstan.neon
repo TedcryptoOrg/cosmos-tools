@@ -1,0 +1,23 @@
+includes:
+  - vendor/phpstan/phpstan-beberlei-assert/extension.neon
+  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+  - vendor/phpstan/phpstan-phpunit/extension.neon
+  - vendor/phpstan/phpstan-strict-rules/rules.neon
+  - vendor/phpstan/phpstan-symfony/extension.neon
+  - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+  - vendor/jangregor/phpstan-prophecy/extension.neon
+
+parameters:
+  treatPhpDocTypesAsCertain: false
+  level: 1
+  paths:
+    - bin
+    - config
+    - public
+    - src
+    - tests
+  tmpDir: var/cache/phpstan
+  scanDirectories:
+    - %currentWorkingDirectory%/var/cache/test/Symfony/Config
+  symfony:
+    containerXmlPath: var/cache/test/App_KernelTestDebugContainer.xml

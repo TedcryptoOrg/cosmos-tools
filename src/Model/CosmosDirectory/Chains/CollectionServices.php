@@ -31,6 +31,7 @@ class CollectionServices
     public function setRest(?array $rest): CollectionServices
     {
         $this->rest = $rest;
+
         return $this;
     }
 
@@ -45,6 +46,7 @@ class CollectionServices
     public function setRpc(?array $rpc): CollectionServices
     {
         $this->rpc = $rpc;
+
         return $this;
     }
 }

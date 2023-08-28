@@ -8,13 +8,10 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class ValidatorCosmosDirectoryClient
 {
-    private CacheInterface $cache;
+    private readonly Client $client;
 
-    private Client $client;
-
-    public function __construct(CacheInterface $cache)
+    public function __construct(private readonly CacheInterface $cache)
     {
-        $this->cache = $cache;
         $this->client = new Client(
             [
                 'base_uri' => 'https://validators.cosmos.directory/',
@@ -34,7 +31,7 @@ class ValidatorCosmosDirectoryClient
             $item->expiresAfter(3600);
 
             $data = $this->client->get('/')->getBody()->getContents();
-            $data = json_decode($data, true);
+            $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
 
             return $data['validators'] ?? [];
         });
@@ -46,7 +43,7 @@ class ValidatorCosmosDirectoryClient
             $item->expiresAfter(3600);
 
             $data = $this->client->get('/chains/'.$chain)->getBody()->getContents();
-            $data = json_decode($data, true);
+            $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
 
             return $data['validators'] ?? [];
         });
@@ -58,7 +55,7 @@ class ValidatorCosmosDirectoryClient
             $item->expiresAfter(3600);
 
             $data = $this->client->get('/chains/'.$chain.'/'.$valoperAddress)->getBody()->getContents();
-            $data = json_decode($data, true);
+            $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
 
             return $data['validator'] ?? [];
         });

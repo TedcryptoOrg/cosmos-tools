@@ -11,11 +11,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractFormHandler implements FormHandlerInterface
 {
-    protected FormFactoryInterface $formFactory;
-
-    public function __construct(FormFactoryInterface $formFactory)
+    public function __construct(protected FormFactoryInterface $formFactory)
     {
-        $this->formFactory = $formFactory;
     }
 
     public function handle(Request $request, FormInterface $form, array $options = []): FormHandlerResponseInterface

@@ -12,10 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SignerController extends BaseController
 {
-
-    /**
-     * @Route("/cosmos/signer", name="app_cosmos_signer")
-     */
+    #[Route(path: '/cosmos/signer', name: 'app_cosmos_signer')]
     public function __invoke(Request $request, SignerFormHandler $signerFormHandler): Response
     {
         $formResponse = $this->createAndHandleFormHandler($signerFormHandler, $request);

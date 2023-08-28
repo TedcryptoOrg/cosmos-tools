@@ -22,6 +22,7 @@ class StakingParameters
     public function setUnboundingTime(string $unboundingTime): StakingParameters
     {
         $this->unboundingTime = $unboundingTime;
+
         return $this;
     }
 
@@ -33,6 +34,7 @@ class StakingParameters
     public function setMaxValidators(int $maxValidators): StakingParameters
     {
         $this->maxValidators = $maxValidators;
+
         return $this;
     }
 
@@ -44,6 +46,7 @@ class StakingParameters
     public function setMaxEntries(int $maxEntries): StakingParameters
     {
         $this->maxEntries = $maxEntries;
+
         return $this;
     }
 
@@ -55,6 +58,7 @@ class StakingParameters
     public function setHistoricalEntries(int $historicalEntries): StakingParameters
     {
         $this->historicalEntries = $historicalEntries;
+
         return $this;
     }
 
@@ -66,6 +70,7 @@ class StakingParameters
     public function setBondDenom(string $bondDenom): StakingParameters
     {
         $this->bondDenom = $bondDenom;
+
         return $this;
     }
 }

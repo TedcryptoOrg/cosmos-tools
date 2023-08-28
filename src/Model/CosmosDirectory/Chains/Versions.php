@@ -18,6 +18,7 @@ class Versions
     public function setApplicationVersion(string $applicationVersion): Versions
     {
         $this->applicationVersion = $applicationVersion;
+
         return $this;
     }
 
@@ -29,6 +30,7 @@ class Versions
     public function setCosmosSdkVersion(string $cosmosSdkVersion): Versions
     {
         $this->cosmosSdkVersion = $cosmosSdkVersion;
+
         return $this;
     }
 
@@ -40,6 +42,7 @@ class Versions
     public function setTendermintVersion(string $tendermintVersion): Versions
     {
         $this->tendermintVersion = $tendermintVersion;
+
         return $this;
     }
 }

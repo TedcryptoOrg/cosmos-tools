@@ -10,14 +10,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class ExportDelegationsManager
 {
-    private EntityManagerInterface $entityManager;
-
-    private MessageBusInterface $bus;
-
-    public function __construct(EntityManagerInterface $entityManager, MessageBusInterface $bus)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly MessageBusInterface $bus)
     {
-        $this->entityManager = $entityManager;
-        $this->bus = $bus;
     }
 
     public function find(int $id): ?ExportDelegationsRequest
@@ -25,12 +19,15 @@ class ExportDelegationsManager
         return $this->entityManager->getRepository(ExportDelegationsRequest::class)->find($id);
     }
 
+    /**
+     * @param array<mixed> $formData
+     */
     public function createRequest(array $formData): ExportDelegationsRequest
     {
         $exportDelegationsRequest = new ExportDelegationsRequest();
         $exportDelegationsRequest
-            ->setApiClient($formData['custom_api_server'] ?: $formData['api_client'])
-            ->setEmail($formData['email'] ?: null)
+            ->setApiClient($formData['custom_api_server'] ?? $formData['api_client'])
+            ->setEmail($formData['email'] ?? null)
             ->setHeight($formData['height'])
             ->setNetwork($formData['network'])
         ;
@@ -80,7 +77,7 @@ class ExportDelegationsManager
 
     public function retry(ExportDelegationsRequest $exportDelegationsRequest): void
     {
-        if ($exportDelegationsRequest->getStatus() !== ExportStatusEnum::ERROR) {
+        if (ExportStatusEnum::ERROR !== $exportDelegationsRequest->getStatus()) {
             throw new \LogicException(sprintf('Cannot retry export delegations request "%s" with status: %s', $exportDelegationsRequest->getId(), $exportDelegationsRequest->getStatus()));
         }
 
@@ -89,13 +86,21 @@ class ExportDelegationsManager
             ->setUpdatedAt(new \DateTime())
         ;
         $this->entityManager->flush();
+        if (null === $exportDelegationsRequest->getExportProcess()) {
+            throw new \LogicException(sprintf('Cannot retry export delegations request "%s" without export process', $exportDelegationsRequest->getId()));
+        }
 
         foreach ($exportDelegationsRequest->getExportProcess()->getValidators() as $validator) {
-            if ($validator->getStatus() === ExportStatusEnum::DONE) {
+            if (ExportStatusEnum::DONE === $validator->getStatus()) {
                 continue;
             }
 
-            $this->bus->dispatch(new FetchValidatorDelegationsMessage($exportDelegationsRequest->getId(), $validator->getId()));
+            $this->bus->dispatch(
+                new FetchValidatorDelegationsMessage(
+                    $exportDelegationsRequest->getId(),
+                    $validator->getId()
+                )
+            );
         }
     }
 }

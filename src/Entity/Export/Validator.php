@@ -2,7 +2,6 @@
 
 namespace App\Entity\Export;
 
-use App\Entity\Tools\ExportDelegationsRequest;
 use App\Enum\Export\ExportStatusEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,8 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
+ *
  * @ORM\Table(
  *     indexes={
+ *
  *      @ORM\Index(name="validator_address", columns={"validator_address"})
  *     }
  * )
@@ -20,13 +21,16 @@ class Validator
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="ExportProcess")
+     *
      * @ORM\JoinColumn(name="export_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private ExportProcess $exportProcess;
@@ -90,14 +94,15 @@ class Validator
         $this->updatedAt = new \DateTime();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId(?int $id): Validator
+    public function setId(int $id): Validator
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -109,6 +114,7 @@ class Validator
     public function setExportProcess(ExportProcess $exportProcess): Validator
     {
         $this->exportProcess = $exportProcess;
+
         return $this;
     }
 
@@ -120,6 +126,7 @@ class Validator
     public function setValidatorName(string $validatorName): Validator
     {
         $this->validatorName = $validatorName;
+
         return $this;
     }
 
@@ -131,6 +138,7 @@ class Validator
     public function setValidatorAddress(string $validatorAddress): Validator
     {
         $this->validatorAddress = $validatorAddress;
+
         return $this;
     }
 
@@ -142,6 +150,7 @@ class Validator
     public function setIsCompleted(bool $isCompleted): Validator
     {
         $this->isCompleted = $isCompleted;
+
         return $this;
     }
 
@@ -153,6 +162,7 @@ class Validator
     public function setCompletedAt(?\DateTime $completedAt): Validator
     {
         $this->completedAt = $completedAt;
+
         return $this;
     }
 
@@ -201,6 +211,7 @@ class Validator
     public function setStatus(string $status): Validator
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -212,6 +223,7 @@ class Validator
     public function setIsError(bool $isError): Validator
     {
         $this->isError = $isError;
+
         return $this;
     }
 
@@ -223,6 +235,7 @@ class Validator
     public function setErrorMessage(?string $errorMessage): Validator
     {
         $this->errorMessage = $errorMessage;
+
         return $this;
     }
 
@@ -234,6 +247,7 @@ class Validator
     public function setCreatedAt(\DateTime $createdAt): Validator
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -245,6 +259,7 @@ class Validator
     public function setUpdatedAt(\DateTime $updatedAt): Validator
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 }

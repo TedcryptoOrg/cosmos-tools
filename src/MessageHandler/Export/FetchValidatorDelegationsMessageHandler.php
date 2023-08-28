@@ -14,35 +14,23 @@ use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
 #[AsMessageHandler]
 class FetchValidatorDelegationsMessageHandler
 {
-    private ExportValidatorManager $exportValidatorManager;
-
-    private ExportDelegationsManager $exportDelegationsManager;
-
-    private LoggerInterface $logger;
-
-    private EntityManagerUtil $entityManagerUtil;
-
-    public function __construct(ExportValidatorManager $exportValidatorManager, ExportDelegationsManager $exportDelegationsManager, EntityManagerUtil $entityManagerUtil, LoggerInterface $logger)
+    public function __construct(private readonly ExportValidatorManager $exportValidatorManager, private readonly ExportDelegationsManager $exportDelegationsManager, private readonly EntityManagerUtil $entityManagerUtil, private readonly LoggerInterface $logger)
     {
-        $this->exportValidatorManager = $exportValidatorManager;
-        $this->exportDelegationsManager = $exportDelegationsManager;
-        $this->logger = $logger;
-        $this->entityManagerUtil = $entityManagerUtil;
     }
 
     public function __invoke(FetchValidatorDelegationsMessage $message): void
     {
         $exportValidator = $this->exportValidatorManager->find($message->getExportValidatorId());
-        if (!$exportValidator) {
+        if (null === $exportValidator) {
             throw new UnrecoverableMessageHandlingException('Export validator not found');
         }
         $exportDelegationRequest = $this->exportDelegationsManager->find($message->getExportDelegationRequestId());
-        if (!$exportDelegationRequest) {
+        if (null === $exportDelegationRequest) {
             throw new UnrecoverableMessageHandlingException('Export delegation request not found');
         }
 
         // Flag so the user knows that something is coming...
-        if ($exportDelegationRequest->getStatus() === ExportStatusEnum::PENDING) {
+        if (ExportStatusEnum::PENDING === $exportDelegationRequest->getStatus()) {
             $this->exportDelegationsManager->flagProcessing($exportDelegationRequest);
         }
 

@@ -3,14 +3,15 @@
 namespace App\Service\Form;
 
 use App\Form\FormHandlerInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FormHandlerManager
 {
     /**
-     * Handles the form
+     * Handles the form.
+     *
+     * @param array<mixed> $options
      */
     public function createAndHandle(FormHandlerInterface $formHandler, Request $request, array $options = []): FormHandlerResponseInterface
     {
@@ -22,19 +23,17 @@ class FormHandlerManager
     }
 
     /**
-     * Resolve/validate handler options
+     * Resolve/validate handler options.
      *
-     * @param FormHandlerInterface $formHandler
-     * @param array $options
+     * @param array<mixed> $options
      *
-     * @return array
+     * @return array<mixed>
      */
-    private function resolveOptions(FormHandlerInterface $formHandler, array $options)
+    private function resolveOptions(FormHandlerInterface $formHandler, array $options): array
     {
         $optionsResolver = new OptionsResolver();
         $formHandler->configureOptions($optionsResolver);
-        $options = $optionsResolver->resolve($options);
 
-        return $options;
+        return $optionsResolver->resolve($options);
     }
 }

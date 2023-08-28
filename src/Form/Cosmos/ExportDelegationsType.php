@@ -10,22 +10,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ExportDelegationsType extends AbstractType
 {
-    private ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient;
-
-    public function __construct(ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient)
+    public function __construct(private readonly ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient)
     {
-        $this->chainsCosmosDirectoryClient = $chainsCosmosDirectoryClient;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $chains = $this->chainsCosmosDirectoryClient->getAllChains();
         $serversOptions = [];
         foreach ($chains->getChains() as $chain) {
             $collectionServices = $chain->getBestApis();
             foreach ($collectionServices->getRest() as $restServiceServer) {
-                $name = sprintf('%s (%s)', $restServiceServer->getProvider() ?: 'Unknown', $restServiceServer->getAddress());
-                $serversOptions[$chain->getName()][$name] = (string) $restServiceServer->getAddress();
+                $name = sprintf('%s (%s)', $restServiceServer->getProvider() ?? 'Unknown', $restServiceServer->getAddress());
+                $serversOptions[$chain->getName()][$name] = $restServiceServer->getAddress();
             }
             $serversOptions[$chain->getName()]['Custom server'] = 'custom_'.$chain->getName();
         }
@@ -61,5 +58,4 @@ class ExportDelegationsType extends AbstractType
             ])
         ;
     }
-
 }

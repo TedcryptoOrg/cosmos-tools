@@ -8,22 +8,26 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
+ *
  * @ORM\Table(name="export_delegations_request")
  */
 class ExportDelegationsRequest
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Export\ExportProcess", inversedBy="exportDelegationsRequest")
+     *
      * @ORM\JoinColumn(name="export_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
-    private ?ExportProcess $exportProcess;
+    private ?ExportProcess $exportProcess = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -38,7 +42,7 @@ class ExportDelegationsRequest
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $email;
+    private ?string $email = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -58,7 +62,7 @@ class ExportDelegationsRequest
     /**
      * @ORM\Column(name="error", type="string", length=255, nullable=true)
      */
-    private ?string $error;
+    private ?string $error = null;
 
     /**
      * @ORM\Column(type="datetime")
@@ -77,14 +81,15 @@ class ExportDelegationsRequest
         $this->token = bin2hex(random_bytes(32));
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId(?int $id): ExportDelegationsRequest
+    public function setId(int $id): ExportDelegationsRequest
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -96,6 +101,7 @@ class ExportDelegationsRequest
     public function setExportProcess(?ExportProcess $exportProcess): ExportDelegationsRequest
     {
         $this->exportProcess = $exportProcess;
+
         return $this;
     }
 
@@ -107,6 +113,7 @@ class ExportDelegationsRequest
     public function setNetwork(string $network): ExportDelegationsRequest
     {
         $this->network = $network;
+
         return $this;
     }
 
@@ -118,6 +125,7 @@ class ExportDelegationsRequest
     public function setApiClient(?string $apiClient): ExportDelegationsRequest
     {
         $this->apiClient = $apiClient;
+
         return $this;
     }
 
@@ -129,6 +137,7 @@ class ExportDelegationsRequest
     public function setEmail(?string $email): ExportDelegationsRequest
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -140,6 +149,7 @@ class ExportDelegationsRequest
     public function setHeight(?string $height): ExportDelegationsRequest
     {
         $this->height = $height;
+
         return $this;
     }
 
@@ -151,6 +161,7 @@ class ExportDelegationsRequest
     public function setStatus(string $status): ExportDelegationsRequest
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -162,6 +173,7 @@ class ExportDelegationsRequest
     public function setToken(string $token): ExportDelegationsRequest
     {
         $this->token = $token;
+
         return $this;
     }
 
@@ -173,6 +185,7 @@ class ExportDelegationsRequest
     public function setCreatedAt(\DateTime $createdAt): ExportDelegationsRequest
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -184,6 +197,7 @@ class ExportDelegationsRequest
     public function setUpdatedAt(\DateTime $updatedAt): ExportDelegationsRequest
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -195,6 +209,7 @@ class ExportDelegationsRequest
     public function setError(?string $error)
     {
         $this->error = $error;
+
         return $this;
     }
 }

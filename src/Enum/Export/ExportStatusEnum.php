@@ -4,9 +4,9 @@ namespace App\Enum\Export;
 
 class ExportStatusEnum
 {
-    public const PENDING = 'pending';
-    public const PROCESSING = 'processing';
-    public const DONE = 'done';
-    public const ERROR = 'error';
-    public const CANCELLED = 'cancelled';
+    final public const PENDING = 'pending';
+    final public const PROCESSING = 'processing';
+    final public const DONE = 'done';
+    final public const ERROR = 'error';
+    final public const CANCELLED = 'cancelled';
 }

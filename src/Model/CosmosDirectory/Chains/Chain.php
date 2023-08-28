@@ -57,7 +57,7 @@ class Chain
     private array $prices;
 
     // TODO
-    //private array $assets;
+    // private array $assets;
 
     public function getName(): string
     {
@@ -67,6 +67,7 @@ class Chain
     public function setName(string $name): Chain
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -78,6 +79,7 @@ class Chain
     public function setPath(string $path): Chain
     {
         $this->path = $path;
+
         return $this;
     }
 
@@ -89,6 +91,7 @@ class Chain
     public function setChainName(string $chainName): Chain
     {
         $this->chainName = $chainName;
+
         return $this;
     }
 
@@ -100,6 +103,7 @@ class Chain
     public function setNetworkType(string $networkType): Chain
     {
         $this->networkType = $networkType;
+
         return $this;
     }
 
@@ -111,6 +115,7 @@ class Chain
     public function setPrettyName(string $prettyName): Chain
     {
         $this->prettyName = $prettyName;
+
         return $this;
     }
 
@@ -122,6 +127,7 @@ class Chain
     public function setChainId(string $chainId): Chain
     {
         $this->chainId = $chainId;
+
         return $this;
     }
 
@@ -133,6 +139,7 @@ class Chain
     public function setStatus(string $status): Chain
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -144,6 +151,7 @@ class Chain
     public function setBech32Prefix(string $bech32Prefix): Chain
     {
         $this->bech32Prefix = $bech32Prefix;
+
         return $this;
     }
 
@@ -155,6 +163,7 @@ class Chain
     public function setSymbol(string $symbol): Chain
     {
         $this->symbol = $symbol;
+
         return $this;
     }
 
@@ -166,6 +175,7 @@ class Chain
     public function setDisplay(string $display): Chain
     {
         $this->display = $display;
+
         return $this;
     }
 
@@ -177,6 +187,7 @@ class Chain
     public function setDenom(string $denom): Chain
     {
         $this->denom = $denom;
+
         return $this;
     }
 
@@ -188,6 +199,7 @@ class Chain
     public function setDecimals(int $decimals): Chain
     {
         $this->decimals = $decimals;
+
         return $this;
     }
 
@@ -199,6 +211,7 @@ class Chain
     public function setCoingeckoId(string $coingeckoId): Chain
     {
         $this->coingeckoId = $coingeckoId;
+
         return $this;
     }
 
@@ -210,6 +223,7 @@ class Chain
     public function setImage(string $image): Chain
     {
         $this->image = $image;
+
         return $this;
     }
 
@@ -221,6 +235,7 @@ class Chain
     public function setHeight(?int $height): Chain
     {
         $this->height = $height;
+
         return $this;
     }
 
@@ -232,6 +247,7 @@ class Chain
     public function setBestApis(CollectionServices $bestApis): Chain
     {
         $this->bestApis = $bestApis;
+
         return $this;
     }
 
@@ -243,6 +259,7 @@ class Chain
     public function setProxyStatus(ProxyStatus $proxyStatus): Chain
     {
         $this->proxyStatus = $proxyStatus;
+
         return $this;
     }
 
@@ -254,6 +271,7 @@ class Chain
     public function setVersions(Versions $versions): Chain
     {
         $this->versions = $versions;
+
         return $this;
     }
 
@@ -265,6 +283,7 @@ class Chain
     public function setExplorers(array $explorers): Chain
     {
         $this->explorers = $explorers;
+
         return $this;
     }
 
@@ -276,6 +295,7 @@ class Chain
     public function setPrices(array $prices): Chain
     {
         $this->prices = $prices;
+
         return $this;
     }
 }

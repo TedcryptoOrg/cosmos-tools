@@ -21,13 +21,10 @@ class UpgradesController extends BaseController
 {
     public function __construct(
         private readonly PolkachuApiClient $polkachuApiClient
-    )
-    {
+    ) {
     }
 
-    /**
-     * @Route("/cosmos/upgrades", name="app_cosmos_upgrades_index")
-     */
+    #[Route(path: '/cosmos/upgrades', name: 'app_cosmos_upgrades_index')]
     public function indexAction(Request $request, SignerFormHandler $signerFormHandler): Response
     {
         $formResponse = $this->createAndHandleFormHandler($signerFormHandler, $request);
@@ -37,16 +34,14 @@ class UpgradesController extends BaseController
         ]);
     }
 
-    /**
-     * @Route("/cosmos/upgrades/ical.ics", name="app_cosmos_upgrades_ical")
-     */
+    #[Route(path: '/cosmos/upgrades/ical.ics', name: 'app_cosmos_upgrades_ical')]
     public function icalAction(Request $request): Response
     {
         $cosmosUpgrades = $this->polkachuApiClient->getCosmosUpgrades();
         $chains = $request->query->all('chains');
         $events = [];
         foreach ($cosmosUpgrades->getUpgrades() as $upgrade) {
-            if ($chains && !\in_array($upgrade->getNetwork(), $chains)) {
+            if ($chains && !\in_array($upgrade->getNetwork(), $chains, true)) {
                 continue;
             }
 
@@ -54,19 +49,19 @@ class UpgradesController extends BaseController
                 new DateTime($upgrade->getEstimatedUpgradeTime(), false),
                 new DateTime($upgrade->getEstimatedUpgradeTime()->modify('+10 minutes'), false)
             );
-            $description = 'Network: ' . $upgrade->getNetwork() .
-                '<br>Chain: ' . $upgrade->getChainName() .
-                '<br>Version: ' . $upgrade->getNodeVersion() .
-                '<br>Estimated upgrade time: ' . $upgrade->getEstimatedUpgradeTime()->format('Y-m-d H:i:s') .
-                '<br>Proposal: ' . $upgrade->getProposal() .
-                '<br>Block: ' . $upgrade->getBlock() .
-                '<br>Repo: ' . $upgrade->getRepo().'/commit/'.$upgrade->getGitHash() .
-                '<br>Block link: ' . $upgrade->getBlockLink() .
-                '<br>Guide: ' . $upgrade->getGuide() .
-                '<br>Cosmo Visor Folder: ' . $upgrade->getCosmoVisorFolder();
+            $description = 'Network: '.$upgrade->getNetwork().
+                '<br>Chain: '.$upgrade->getChainName().
+                '<br>Version: '.$upgrade->getNodeVersion().
+                '<br>Estimated upgrade time: '.$upgrade->getEstimatedUpgradeTime()->format('Y-m-d H:i:s').
+                '<br>Proposal: '.$upgrade->getProposal().
+                '<br>Block: '.$upgrade->getBlock().
+                '<br>Repo: '.$upgrade->getRepo().'/commit/'.$upgrade->getGitHash().
+                '<br>Block link: '.$upgrade->getBlockLink().
+                '<br>Guide: '.$upgrade->getGuide().
+                '<br>Cosmo Visor Folder: '.$upgrade->getCosmoVisorFolder();
             $event = new Event();
             $event
-                ->setSummary('Upgrade ' . $upgrade->getChainName() . ' to ' . $upgrade->getNodeVersion())
+                ->setSummary('Upgrade '.$upgrade->getChainName().' to '.$upgrade->getNodeVersion())
                 ->setOccurrence($timeSpan)
                 ->setDescription($description)
             ;
@@ -85,5 +80,4 @@ class UpgradesController extends BaseController
 
         return $calendarResponse;
     }
-
 }

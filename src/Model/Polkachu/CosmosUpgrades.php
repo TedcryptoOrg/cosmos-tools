@@ -2,16 +2,13 @@
 
 namespace App\Model\Polkachu;
 
-use App\Model\CosmosDirectory\Chains\Chain;
-use App\Model\CosmosDirectory\Chains\Repository;
 use JMS\Serializer\Annotation as Serializer;
 
 class CosmosUpgrades
 {
-    private Repository $repository;
-
     /**
      * @Serializer\Type("array<App\Model\Polkachu\CosmosUpgrade>")
+     *
      * @Serializer\Inline()
      */
     private array $upgrades;

@@ -17,5 +17,4 @@ class AccountsType extends AbstractType
             ])
         ;
     }
-
 }

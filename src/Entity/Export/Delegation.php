@@ -6,8 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
+ *
  * @ORM\Table(
  *    indexes={
+ *
  *      @ORM\Index(name="delegator_address", columns={"delegator_address"})
  *    }
  * )
@@ -16,13 +18,16 @@ class Delegation
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Validator")
+     *
      * @ORM\JoinColumn(name="validator_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private Validator $validator;
@@ -45,6 +50,7 @@ class Delegation
     public function setId(?int $id): Delegation
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -56,6 +62,7 @@ class Delegation
     public function setValidator(Validator $validator): Delegation
     {
         $this->validator = $validator;
+
         return $this;
     }
 
@@ -67,6 +74,7 @@ class Delegation
     public function setDelegatorAddress(string $delegatorAddress): Delegation
     {
         $this->delegatorAddress = $delegatorAddress;
+
         return $this;
     }
 
@@ -78,6 +86,7 @@ class Delegation
     public function setShares(string $shares): Delegation
     {
         $this->shares = $shares;
+
         return $this;
     }
 }

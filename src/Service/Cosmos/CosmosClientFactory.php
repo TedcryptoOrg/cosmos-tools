@@ -9,21 +9,15 @@ use Psr\Log\LoggerInterface;
 
 class CosmosClientFactory
 {
-    private ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient;
-
-    private LoggerInterface $logger;
-
-    public function __construct(ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient, LoggerInterface $logger)
+    public function __construct(private readonly ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient, private readonly LoggerInterface $logger)
     {
-        $this->chainsCosmosDirectoryClient = $chainsCosmosDirectoryClient;
-        $this->logger = $logger;
     }
 
     public function createClient(string $chain): CosmosClient
     {
         $chainDirectory = $this->chainsCosmosDirectoryClient->getChain($chain);
         $servers = $chainDirectory['best_apis']['rest'];
-        $provider = $servers[\rand(0, \count($servers) - 1)];
+        $provider = $servers[random_int(0, (is_countable($servers) ? \count($servers) : 0) - 1)];
 
         return new CosmosClient($provider['address'], $provider['provider'] ?? 'Unknown', $this->createSerializer(), $this->logger);
     }

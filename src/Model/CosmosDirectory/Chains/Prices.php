@@ -14,6 +14,7 @@ class Prices
     public function setCoinGecko(?array $coinGecko): Prices
     {
         $this->coinGecko = $coinGecko;
+
         return $this;
     }
 }

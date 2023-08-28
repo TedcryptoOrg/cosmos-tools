@@ -19,22 +19,15 @@ use Symfony\Component\Filesystem\Filesystem;
 )]
 class ExportDelegationsCommand extends Command
 {
-    private ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient;
+    private readonly Filesystem $filesystem;
 
-    private CosmosClientFactory $cosmosClientFactory;
-
-    private Filesystem $filesystem;
-
-    public function __construct(ValidatorCosmosDirectoryClient $chainsCosmosDirectoryClient, CosmosClientFactory $cosmosClientFactory)
+    public function __construct(private readonly ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient, private readonly CosmosClientFactory $cosmosClientFactory)
     {
         parent::__construct();
-
-        $this->validatorCosmosDirectoryClient = $chainsCosmosDirectoryClient;
-        $this->cosmosClientFactory = $cosmosClientFactory;
         $this->filesystem = new Filesystem();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument('chain', InputArgument::REQUIRED, 'Chain')
@@ -56,40 +49,40 @@ class ExportDelegationsCommand extends Command
 
         $this->prepareExportDirectory();
 
-        if (!$validator) {
+        if (null === $validator) {
             $validators = $this->validatorCosmosDirectoryClient->getChain($chain);
         } else {
             $validators = [['moniker' => 'manual', 'address' => $validator]];
         }
 
-        if ($apiClient) {
+        if (null !== $apiClient) {
             $cosmosClient = $this->cosmosClientFactory->createClientManually($apiClient);
         } else {
             $cosmosClient = $this->cosmosClientFactory->createClient($chain);
         }
 
-        $style->writeln('Using provider: ' . $cosmosClient->getProvider());
+        $style->writeln('Using provider: '.$cosmosClient->getProvider());
 
-        foreach ($validators as $validator) {
-            $style->title('Validator '.$validator['moniker'].' ('.$validator['address'].')');
+        foreach ($validators as $exportValidator) {
+            $style->title('Validator '.$exportValidator['moniker'].' ('.$exportValidator['address'].')');
             $page = 1;
             $offset = 0;
             $lastDelegator = null;
             while (true) {
                 $style->writeln('Fetching delegations... Page '.$page);
-                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], $height, $limit, $offset);
-                if (\count($delegations->getDelegationResponses()) === 0) {
+                $delegations = $cosmosClient->getValidatorDelegations($exportValidator['address'], $height, $limit, $offset);
+                if ([] === $delegations->getDelegationResponses()) {
                     $style->writeln('No more delegations!');
                     break;
                 }
                 if ($delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress() === $lastDelegator) {
-                    $style->writeln('No more NEW delegations! Same delegator address as last page. ' . $lastDelegator);
+                    $style->writeln('No more NEW delegations! Same delegator address as last page. '.$lastDelegator);
                     break;
                 }
                 $lastDelegator = $delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress();
 
                 $style->write('Found '.\count($delegations->getDelegationResponses()).' delegations... Exporting...');
-                $this->exportToCsv($delegations, $validator['address'], $page);
+                $this->exportToCsv($delegations, $exportValidator['address'], $page);
                 $style->writeln(' Done!');
 
                 if (\count($delegations->getDelegationResponses()) < $limit) {
@@ -99,7 +92,7 @@ class ExportDelegationsCommand extends Command
                 }
 
                 $offset += $limit;
-                $page++;
+                ++$page;
             }
         }
 

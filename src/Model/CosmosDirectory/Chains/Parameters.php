@@ -57,6 +57,7 @@ class Parameters
     public function setAuthz(bool $authz): Parameters
     {
         $this->authz = $authz;
+
         return $this;
     }
 
@@ -68,6 +69,7 @@ class Parameters
     public function setActualBlockTime(float $actualBlockTime): Parameters
     {
         $this->actualBlockTime = $actualBlockTime;
+
         return $this;
     }
 
@@ -79,6 +81,7 @@ class Parameters
     public function setActualBlocksPerYear(float $actualBlocksPerYear): Parameters
     {
         $this->actualBlocksPerYear = $actualBlocksPerYear;
+
         return $this;
     }
 
@@ -90,6 +93,7 @@ class Parameters
     public function setUnboundingTime(int $unboundingTime): Parameters
     {
         $this->unboundingTime = $unboundingTime;
+
         return $this;
     }
 
@@ -101,6 +105,7 @@ class Parameters
     public function setMaxValidators(int $maxValidators): Parameters
     {
         $this->maxValidators = $maxValidators;
+
         return $this;
     }
 
@@ -112,6 +117,7 @@ class Parameters
     public function setBlocksPerYear(int $blocksPerYear): Parameters
     {
         $this->blocksPerYear = $blocksPerYear;
+
         return $this;
     }
 
@@ -123,6 +129,7 @@ class Parameters
     public function setBlockTime(float $blockTime): Parameters
     {
         $this->blockTime = $blockTime;
+
         return $this;
     }
 
@@ -134,6 +141,7 @@ class Parameters
     public function setCommunityTax(float|int $communityTax): Parameters
     {
         $this->communityTax = $communityTax;
+
         return $this;
     }
 
@@ -145,6 +153,7 @@ class Parameters
     public function setBaseInflation(float $baseInflation): Parameters
     {
         $this->baseInflation = $baseInflation;
+
         return $this;
     }
 
@@ -156,6 +165,7 @@ class Parameters
     public function setEstimatedApr(float $estimatedApr): Parameters
     {
         $this->estimatedApr = $estimatedApr;
+
         return $this;
     }
 
@@ -167,6 +177,7 @@ class Parameters
     public function setCalculatedApr(float $calculatedApr): Parameters
     {
         $this->calculatedApr = $calculatedApr;
+
         return $this;
     }
 
@@ -178,6 +189,7 @@ class Parameters
     public function setStakingParameters(StakingParameters $stakingParameters): Parameters
     {
         $this->stakingParameters = $stakingParameters;
+
         return $this;
     }
 
@@ -189,6 +201,7 @@ class Parameters
     public function setSlashingParameters(SlashingParameters $slashingParameters): Parameters
     {
         $this->slashingParameters = $slashingParameters;
+
         return $this;
     }
 
@@ -200,6 +213,7 @@ class Parameters
     public function setMintParameters(MintParameters $mintParameters): Parameters
     {
         $this->mintParameters = $mintParameters;
+
         return $this;
     }
 
@@ -211,6 +225,7 @@ class Parameters
     public function setDistributionParameters(DistributionParameters $distributionParameters): Parameters
     {
         $this->distributionParameters = $distributionParameters;
+
         return $this;
     }
 
@@ -222,6 +237,7 @@ class Parameters
     public function setTotalSupply(string $totalSupply): Parameters
     {
         $this->totalSupply = $totalSupply;
+
         return $this;
     }
 
@@ -233,6 +249,7 @@ class Parameters
     public function setAnnualProvision(string $annualProvision): Parameters
     {
         $this->annualProvision = $annualProvision;
+
         return $this;
     }
 
@@ -244,6 +261,7 @@ class Parameters
     public function setBondedTokens(string $bondedTokens): Parameters
     {
         $this->bondedTokens = $bondedTokens;
+
         return $this;
     }
 
@@ -255,6 +273,7 @@ class Parameters
     public function setBondedRatio(?float $bondedRatio): Parameters
     {
         $this->bondedRatio = $bondedRatio;
+
         return $this;
     }
 
@@ -266,6 +285,7 @@ class Parameters
     public function setCurrentBlockHeight(string $currentBlockHeight): Parameters
     {
         $this->currentBlockHeight = $currentBlockHeight;
+
         return $this;
     }
 }

@@ -10,11 +10,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SignerType extends AbstractType
 {
-    private ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient;
-
-    public function __construct(ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient)
+    public function __construct(private readonly ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient)
     {
-        $this->chainsCosmosDirectoryClient = $chainsCosmosDirectoryClient;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -38,7 +35,7 @@ class SignerType extends AbstractType
                 [
                     'choices' => [
                         'Create validator' => 'cosmos.staking.v1beta1.MsgCreateValidator',
-                        //'Edit validator' => 'cosmos.staking.v1beta1.MsgEditValidator',
+                        // 'Edit validator' => 'cosmos.staking.v1beta1.MsgEditValidator',
                     ],
                     'help' => 'The type of the message',
                     'required' => true,
@@ -52,10 +49,9 @@ class SignerType extends AbstractType
                     'attr' => [
                         'class' => 'type-url-forms create-validator-form',
                         'form-type-url' => 'cosmos.staking.v1beta1.MsgCreateValidator',
-                    ]
+                    ],
                 ]
             )
         ;
     }
-
 }
