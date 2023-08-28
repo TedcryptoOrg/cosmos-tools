@@ -1,4 +1,4 @@
-FROM composer:2.3
+FROM composer:2.5
 FROM php:8-fpm-alpine
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
