@@ -23,7 +23,7 @@ return static function (RectorConfig $rector): void {
     $rector->sets([
         SetList::CODE_QUALITY,
         LevelSetList::UP_TO_PHP_82,
-        SymfonyLevelSetList::UP_TO_SYMFONY_62,
+        SymfonyLevelSetList::UP_TO_SYMFONY_61,
         PHPUnitLevelSetList::UP_TO_PHPUNIT_90,
     ]);
 };
