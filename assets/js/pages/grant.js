@@ -73,7 +73,6 @@ $(document).ready(function() {
             return;
         }
 
-
         const msg = {
             typeUrl: '/cosmos.authz.v1beta1.MsgRevoke',
             value: MsgRevoke.fromJSON({
@@ -95,6 +94,5 @@ $(document).ready(function() {
             console.log(error);
             window.notifier.alert(error.message);
         }
-
     });
 })
