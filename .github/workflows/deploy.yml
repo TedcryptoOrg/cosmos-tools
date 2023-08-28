@@ -42,6 +42,7 @@ jobs:
             fixtures/
             migrations/
             public/
+            scripts/
             src/
             templates/
             tests/
