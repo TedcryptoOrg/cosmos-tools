@@ -18,7 +18,13 @@ class AccountsFormHandler extends AbstractFormHandler
 
     public function create(array $options = []): FormInterface
     {
-        return $this->formFactory->create(AccountsType::class, null, $options);
+        return $this->formFactory->create(
+            AccountsType::class,
+            null,
+            $options + [
+                'address_help_text' => 'Any cosmos address. It doesn\'t work with EVM addresses (e.g.: evmos, rebus, etc).',
+            ]
+        );
     }
 
     protected function handleValidForm(Request $request, FormInterface $form, array $options): FormHandlerResponseInterface
