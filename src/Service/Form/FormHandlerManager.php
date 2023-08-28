@@ -10,6 +10,8 @@ class FormHandlerManager
 {
     /**
      * Handles the form.
+     *
+     * @param array<mixed> $options
      */
     public function createAndHandle(FormHandlerInterface $formHandler, Request $request, array $options = []): FormHandlerResponseInterface
     {
@@ -23,9 +25,11 @@ class FormHandlerManager
     /**
      * Resolve/validate handler options.
      *
-     * @return array
+     * @param array<mixed> $options
+     *
+     * @return array<mixed>
      */
-    private function resolveOptions(FormHandlerInterface $formHandler, array $options)
+    private function resolveOptions(FormHandlerInterface $formHandler, array $options): array
     {
         $optionsResolver = new OptionsResolver();
         $formHandler->configureOptions($optionsResolver);

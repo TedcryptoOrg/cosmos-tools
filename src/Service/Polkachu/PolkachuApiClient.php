@@ -43,7 +43,7 @@ class PolkachuApiClient
 
     private function getSerialiser(): Serializer
     {
-        if ($this->serializer === null) {
+        if (null === $this->serializer) {
             $this->serializer = SerializerBuilder::create()
                 // ->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
                 ->build();

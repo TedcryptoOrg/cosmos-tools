@@ -25,8 +25,8 @@ class ExportEventSubscriber implements EventSubscriberInterface
     {
         $validator = $event->getValidator();
         $export = $validator->getExportProcess();
-        foreach ($export->getValidators() as $validator) {
-            if (!$validator->isCompleted()) {
+        foreach ($export->getValidators() as $exportValidator) {
+            if (!$exportValidator->isCompleted()) {
                 return;
             }
         }

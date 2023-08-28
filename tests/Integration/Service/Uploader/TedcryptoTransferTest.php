@@ -11,12 +11,15 @@ class TedcryptoTransferTest extends BaseIntegrationTestCase
 
     protected function setUp(): void
     {
-        $this->tedcryptoTransfer = $this->getService(TedcryptoTransfer::class);
+        /** @var TedcryptoTransfer $tedcryptoTransfer */
+        $tedcryptoTransfer = $this->getService(TedcryptoTransfer::class);
+
+        $this->tedcryptoTransfer = $tedcryptoTransfer;
     }
 
-    public function testUpload()
+    public function testUpload(): void
     {
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             'tedcrypto.io',
             $this->tedcryptoTransfer->upload(__DIR__.'/upload_directory', 'upload_test')
         );

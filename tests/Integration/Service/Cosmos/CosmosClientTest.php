@@ -13,7 +13,7 @@ class CosmosClientTest extends BaseIntegrationTestCase
         $cosmosClientFactory = $this->getService(CosmosClientFactory::class);
         $client = $cosmosClientFactory->createClient('secretnetwork');
 
-        $delegations = $client->getValidatorDelegations('secretvaloper10wxn2lv29yqnw2uf4jf439kwy5ef00qdrjxpjn', 1);
-        $this->assertCount(1, $delegations->getDelegationResponses());
+        $delegations = $client->getValidatorDelegations('secretvaloper10wxn2lv29yqnw2uf4jf439kwy5ef00qdrjxpjn', '1');
+        self::assertCount(1, $delegations->getDelegationResponses());
     }
 }

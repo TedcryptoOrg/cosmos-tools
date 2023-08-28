@@ -16,6 +16,8 @@ interface FormHandlerResponseInterface
 
     /**
      * Gets all parameters.
+     *
+     * @return array<mixed>
      */
     public function getAllParameters(): array;
 
@@ -31,6 +33,8 @@ interface FormHandlerResponseInterface
 
     /**
      * Get the form which is being handled.
+     *
+     * @return FormInterface<mixed>
      */
     public function getForm(): FormInterface;
 }

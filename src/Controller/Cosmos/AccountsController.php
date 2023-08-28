@@ -31,7 +31,7 @@ class AccountsController extends BaseController
     public function fetchAction(Request $request): JsonResponse
     {
         $address = $request->get('address');
-        if (!$address) {
+        if (null === $address) {
             return new JsonResponse([
                 'error' => 'Address is required',
             ], 400);

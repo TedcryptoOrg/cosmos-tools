@@ -40,6 +40,7 @@ class TedcryptoTransfer
         }
 
         $this->cleanup($directoryPath, $filename);
+        \assert(\is_string($downloadUrl));
 
         return $downloadUrl;
     }

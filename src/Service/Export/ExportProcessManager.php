@@ -20,7 +20,7 @@ class ExportProcessManager
     {
         /** @var ExportProcess|null $export */
         $export = $this->getRepository()->findOneBy(['network' => $request->getNetwork(), 'height' => $request->getHeight()]);
-        if ($export !== null) {
+        if (null !== $export) {
             $this->logger->info('We found one valid export already for this request');
             $export->addExportDelegationsRequest($request);
             $this->entityManager->flush();

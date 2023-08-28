@@ -67,6 +67,9 @@ class CosmosClient
         );
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getBlockByHeight(string $height): array
     {
         $url = '/cosmos/base/tendermint/v1beta1/blocks/'.$height;
@@ -97,9 +100,12 @@ class CosmosClient
         return $data['block']['header']['height'];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getValidatorSet(?int $height): array
     {
-        $url = '/cosmos/base/tendermint/v1beta1/validatorsets/'.($height ?: 'latest');
+        $url = '/cosmos/base/tendermint/v1beta1/validatorsets/'.($height ?? 'latest');
         $response = $this->client->request('GET', $url);
 
         if (200 !== $response->getStatusCode()) {

@@ -14,15 +14,15 @@ class ExportDelegationsType extends AbstractType
     {
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $chains = $this->chainsCosmosDirectoryClient->getAllChains();
         $serversOptions = [];
         foreach ($chains->getChains() as $chain) {
             $collectionServices = $chain->getBestApis();
             foreach ($collectionServices->getRest() as $restServiceServer) {
-                $name = sprintf('%s (%s)', $restServiceServer->getProvider() ?: 'Unknown', $restServiceServer->getAddress());
-                $serversOptions[$chain->getName()][$name] = (string) $restServiceServer->getAddress();
+                $name = sprintf('%s (%s)', $restServiceServer->getProvider() ?? 'Unknown', $restServiceServer->getAddress());
+                $serversOptions[$chain->getName()][$name] = $restServiceServer->getAddress();
             }
             $serversOptions[$chain->getName()]['Custom server'] = 'custom_'.$chain->getName();
         }

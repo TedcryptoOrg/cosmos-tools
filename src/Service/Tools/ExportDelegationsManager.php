@@ -19,12 +19,15 @@ class ExportDelegationsManager
         return $this->entityManager->getRepository(ExportDelegationsRequest::class)->find($id);
     }
 
+    /**
+     * @param array<mixed> $formData
+     */
     public function createRequest(array $formData): ExportDelegationsRequest
     {
         $exportDelegationsRequest = new ExportDelegationsRequest();
         $exportDelegationsRequest
-            ->setApiClient($formData['custom_api_server'] ?: $formData['api_client'])
-            ->setEmail($formData['email'] ?: null)
+            ->setApiClient($formData['custom_api_server'] ?? $formData['api_client'])
+            ->setEmail($formData['email'] ?? null)
             ->setHeight($formData['height'])
             ->setNetwork($formData['network'])
         ;
@@ -83,13 +86,21 @@ class ExportDelegationsManager
             ->setUpdatedAt(new \DateTime())
         ;
         $this->entityManager->flush();
+        if (null === $exportDelegationsRequest->getExportProcess()) {
+            throw new \LogicException(sprintf('Cannot retry export delegations request "%s" without export process', $exportDelegationsRequest->getId()));
+        }
 
         foreach ($exportDelegationsRequest->getExportProcess()->getValidators() as $validator) {
             if (ExportStatusEnum::DONE === $validator->getStatus()) {
                 continue;
             }
 
-            $this->bus->dispatch(new FetchValidatorDelegationsMessage($exportDelegationsRequest->getId(), $validator->getId()));
+            $this->bus->dispatch(
+                new FetchValidatorDelegationsMessage(
+                    $exportDelegationsRequest->getId(),
+                    $validator->getId()
+                )
+            );
         }
     }
 }

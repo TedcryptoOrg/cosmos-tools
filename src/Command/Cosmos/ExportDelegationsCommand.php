@@ -27,7 +27,7 @@ class ExportDelegationsCommand extends Command
         $this->filesystem = new Filesystem();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument('chain', InputArgument::REQUIRED, 'Chain')
@@ -49,13 +49,13 @@ class ExportDelegationsCommand extends Command
 
         $this->prepareExportDirectory();
 
-        if (!$validator) {
+        if (null === $validator) {
             $validators = $this->validatorCosmosDirectoryClient->getChain($chain);
         } else {
             $validators = [['moniker' => 'manual', 'address' => $validator]];
         }
 
-        if ($apiClient) {
+        if (null !== $apiClient) {
             $cosmosClient = $this->cosmosClientFactory->createClientManually($apiClient);
         } else {
             $cosmosClient = $this->cosmosClientFactory->createClient($chain);
@@ -63,14 +63,14 @@ class ExportDelegationsCommand extends Command
 
         $style->writeln('Using provider: '.$cosmosClient->getProvider());
 
-        foreach ($validators as $validator) {
-            $style->title('Validator '.$validator['moniker'].' ('.$validator['address'].')');
+        foreach ($validators as $exportValidator) {
+            $style->title('Validator '.$exportValidator['moniker'].' ('.$exportValidator['address'].')');
             $page = 1;
             $offset = 0;
             $lastDelegator = null;
             while (true) {
                 $style->writeln('Fetching delegations... Page '.$page);
-                $delegations = $cosmosClient->getValidatorDelegations($validator['address'], $height, $limit, $offset);
+                $delegations = $cosmosClient->getValidatorDelegations($exportValidator['address'], $height, $limit, $offset);
                 if ([] === $delegations->getDelegationResponses()) {
                     $style->writeln('No more delegations!');
                     break;
@@ -82,7 +82,7 @@ class ExportDelegationsCommand extends Command
                 $lastDelegator = $delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress();
 
                 $style->write('Found '.\count($delegations->getDelegationResponses()).' delegations... Exporting...');
-                $this->exportToCsv($delegations, $validator['address'], $page);
+                $this->exportToCsv($delegations, $exportValidator['address'], $page);
                 $style->writeln(' Done!');
 
                 if (\count($delegations->getDelegationResponses()) < $limit) {

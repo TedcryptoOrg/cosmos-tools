@@ -41,6 +41,9 @@ class ChainsCosmosDirectoryClient
         });
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getChainKeys(): array
     {
         $chains = $this->getAllChains();
@@ -52,6 +55,9 @@ class ChainsCosmosDirectoryClient
         return $chainKeys;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getChain(string $chain): array
     {
         return $this->cache->get('cosmos.directory.chains.'.$chain, function (ItemInterface $item) use ($chain) {
@@ -66,7 +72,7 @@ class ChainsCosmosDirectoryClient
 
     private function getSerialiser(): Serializer
     {
-        if ($this->serializer === null) {
+        if (null === $this->serializer) {
             $this->serializer = SerializerBuilder::create()
                 // ->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
                 ->build();

@@ -20,9 +20,15 @@ class ExportValidatorManager
 
     public function find(int $validatorId): ?Validator
     {
-        return $this->getRepository()->find($validatorId);
+        /** @var Validator|null $validator */
+        $validator = $this->getRepository()->find($validatorId);
+
+        return $validator;
     }
 
+    /**
+     * @return ObjectRepository<Validator>
+     */
     public function getRepository(): ObjectRepository
     {
         return $this->entityManager->getRepository(Validator::class);

@@ -20,7 +20,7 @@ class ExportDelegationsRequest
      *
      * @ORM\Column(type="integer")
      */
-    private ?int $id = null;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Export\ExportProcess", inversedBy="exportDelegationsRequest")
@@ -81,12 +81,12 @@ class ExportDelegationsRequest
         $this->token = bin2hex(random_bytes(32));
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId(?int $id): ExportDelegationsRequest
+    public function setId(int $id): ExportDelegationsRequest
     {
         $this->id = $id;
 

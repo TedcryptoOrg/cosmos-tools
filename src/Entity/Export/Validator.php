@@ -26,7 +26,7 @@ class Validator
      *
      * @ORM\Column(type="integer")
      */
-    private ?int $id = null;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="ExportProcess")
@@ -94,12 +94,12 @@ class Validator
         $this->updatedAt = new \DateTime();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId(?int $id): Validator
+    public function setId(int $id): Validator
     {
         $this->id = $id;
 

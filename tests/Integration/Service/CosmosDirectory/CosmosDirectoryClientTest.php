@@ -7,24 +7,27 @@ use App\Tests\Integration\BaseIntegrationTestCase;
 
 class CosmosDirectoryClientTest extends BaseIntegrationTestCase
 {
-    private ?ChainsCosmosDirectoryClient $client;
+    private ChainsCosmosDirectoryClient $client;
 
     protected function setUp(): void
     {
-        $this->client = $this->getService(ChainsCosmosDirectoryClient::class);
+        /** @var ChainsCosmosDirectoryClient $client */
+        $client = $this->getService(ChainsCosmosDirectoryClient::class);
+
+        $this->client = $client;
     }
 
     public function testGetAllChains(): void
     {
         $chains = $this->client->getAllChains();
-        $this->assertCount(83, $chains);
-        $this->assertSame('agoric', $chains[0]['name']);
+        self::assertCount(83, $chains->getChains());
+        self::assertSame('agoric', $chains->getChains()[0]->getChainName());
     }
 
     public function testGetChain(): void
     {
         $chain = $this->client->getChain('cosmoshub');
-        $this->assertSame('cosmoshub', $chain['chain_name']);
-        $this->assertSame('gaiad', $chain['daemon_name']);
+        self::assertSame('cosmoshub', $chain['chain_name']);
+        self::assertSame('gaiad', $chain['daemon_name']);
     }
 }

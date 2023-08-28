@@ -21,11 +21,11 @@ class FetchValidatorDelegationsMessageHandler
     public function __invoke(FetchValidatorDelegationsMessage $message): void
     {
         $exportValidator = $this->exportValidatorManager->find($message->getExportValidatorId());
-        if ($exportValidator === null) {
+        if (null === $exportValidator) {
             throw new UnrecoverableMessageHandlingException('Export validator not found');
         }
         $exportDelegationRequest = $this->exportDelegationsManager->find($message->getExportDelegationRequestId());
-        if ($exportDelegationRequest === null) {
+        if (null === $exportDelegationRequest) {
             throw new UnrecoverableMessageHandlingException('Export delegation request not found');
         }
 

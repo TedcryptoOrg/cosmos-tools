@@ -30,10 +30,10 @@ class ExportDelegationsFormHandler extends AbstractFormHandler
     protected function handleValidForm(Request $request, FormInterface $form, array $options): FormHandlerResponseInterface
     {
         $formData = $form->getData();
-        $serverAddress = $formData['custom_api_server'] ?: $formData['api_client'];
+        $serverAddress = $formData['custom_api_server'] ?? $formData['api_client'];
         $server = $this->cosmosClientFactory->createClientManually($serverAddress);
 
-        if (!$formData['height']) {
+        if (null === $formData['height']) {
             try {
                 $formData['height'] = $server->getLatestBlockHeight();
             } catch (\Throwable) {
@@ -61,7 +61,12 @@ class ExportDelegationsFormHandler extends AbstractFormHandler
             $this->exportDelegationManager->flagAsDone($exportDelegationRequest);
         } else {
             foreach ($export->getValidators() as $validator) {
-                $this->bus->dispatch(new FetchValidatorDelegationsMessage($exportDelegationRequest->getId(), $validator->getId()));
+                $this->bus->dispatch(
+                    new FetchValidatorDelegationsMessage(
+                        $exportDelegationRequest->getId(),
+                        $validator->getId()
+                    )
+                );
             }
         }
 

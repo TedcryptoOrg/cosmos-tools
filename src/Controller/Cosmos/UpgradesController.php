@@ -41,7 +41,7 @@ class UpgradesController extends BaseController
         $chains = $request->query->all('chains');
         $events = [];
         foreach ($cosmosUpgrades->getUpgrades() as $upgrade) {
-            if ($chains && !\in_array($upgrade->getNetwork(), $chains)) {
+            if ($chains && !\in_array($upgrade->getNetwork(), $chains, true)) {
                 continue;
             }
 

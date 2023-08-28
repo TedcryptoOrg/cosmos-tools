@@ -9,7 +9,7 @@ includes:
 
 parameters:
   treatPhpDocTypesAsCertain: false
-  level: 8
+  level: 1
   paths:
     - bin
     - config
@@ -21,6 +21,3 @@ parameters:
     - %currentWorkingDirectory%/var/cache/test/Symfony/Config
   symfony:
     containerXmlPath: var/cache/test/App_KernelTestDebugContainer.xml
-
-  ignoreErrors:
-      - '/^Property App\\Tests\\Unit\\.* with generic class Prophecy\\Prophecy\\ObjectProphecy does not specify its types\: T$/'

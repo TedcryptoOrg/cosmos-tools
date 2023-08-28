@@ -20,6 +20,10 @@ class DelegationFetcherManager
 
     public function fetch(ExportDelegationsRequest $exportDelegationsRequest, Validator $validator): void
     {
+        if (null === $exportDelegationsRequest->getApiClient()) {
+            throw new \RuntimeException('No api client set');
+        }
+
         $cosmosClient = $this->cosmosClientFactory->createClientManually($exportDelegationsRequest->getApiClient());
 
         $page = 1;

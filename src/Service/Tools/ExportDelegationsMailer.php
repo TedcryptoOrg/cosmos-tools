@@ -17,7 +17,7 @@ class ExportDelegationsMailer
 
     public function sendDoneEmail(ExportDelegationsRequest $exportDelegationsRequest): void
     {
-        if (!$exportDelegationsRequest->getEmail()) {
+        if (null === $exportDelegationsRequest->getEmail()) {
             return;
         }
         $fullLink = $this->router->generate(
@@ -53,7 +53,7 @@ class ExportDelegationsMailer
 
     public function sendErrorEmail(ExportDelegationsRequest $exportDelegationsRequest): void
     {
-        if (!$exportDelegationsRequest->getEmail()) {
+        if (null === $exportDelegationsRequest->getEmail()) {
             return;
         }
         $fullLink = $this->router->generate(
