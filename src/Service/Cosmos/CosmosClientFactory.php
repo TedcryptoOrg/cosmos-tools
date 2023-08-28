@@ -3,6 +3,7 @@
 namespace App\Service\Cosmos;
 
 use App\Service\Cosmos\Authz\AuthzClient;
+use App\Service\Cosmos\FeeGrant\FeeGrantClient;
 use App\Service\CosmosDirectory\ChainsCosmosDirectoryClient;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
@@ -30,6 +31,16 @@ class CosmosClientFactory
     public function createAuthzClient(string $chain): AuthzClient
     {
         return new AuthzClient(
+            'https://rest.cosmos.directory/'.$chain.'/',
+            'cosmos-directory',
+            $this->serializer,
+            $this->logger
+        );
+    }
+
+    public function createFeeGrantClient(string $chain): FeeGrantClient
+    {
+        return new FeeGrantClient(
             'https://rest.cosmos.directory/'.$chain.'/',
             'cosmos-directory',
             $this->serializer,

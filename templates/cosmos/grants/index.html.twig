@@ -26,22 +26,65 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row" style="padding-top: 20px">
+            <div class="col-sm-12">
+                <h2>Authz Grants</h2>
             {% if listGrants is not empty %}
-                <div class="col-sm-12">
-                    <table class="table table-striped">
-                        <thead>
-                            <th>Grantee</th>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-striped">
+                            <thead>
+                                <th>Granter</th>
+                                <th>Grantee</th>
+                                <th>Authorization</th>
+                                <th>Expire at</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                {% for grant in listGrants.grants %}
+                                    <tr>
+                                        <td>{{ grant.granter }}</td>
+                                        <td>{{ grant.grantee }}</td>
+                                        <td>{{ grant.authorization.type }} {{ grant.authorization.getMsg }}</td>
+                                        <td>{{ grant.expiration }}</td>
+                                        <td>
+                                            <button
+                                                    class="btn btn-danger"
+                                                    id="js-revoke-btn"
+                                                    data-grantee="{{ grant.grantee }}"
+                                                    data-granter="{{ grant.granter }}"
+                                                    data-type="{{ grant.authorization.type }}"
+                                                    data-msg="{{ grant.authorization.getMsg }}"
+                                            >Revoke</button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Fee Grants</h2>
+
+                {% if listGrants is not empty %}
+                    <div class="col-sm-12">
+                        <table class="table table-striped">
+                            <thead>
                             <th>Granter</th>
-                            <th>Authorization</th>
+                            <th>Grantee</th>
                             <th>Expire at</th>
                             <th></th>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             {% for grant in listGrants.grants %}
                                 <tr>
-                                    <td>{{ grant.grantee }}</td>
                                     <td>{{ grant.granter }}</td>
-                                    <td>{{ grant.authorization.type }} {{ grant.authorization.getMsg }}</td>
+                                    <td>{{ grant.grantee }}</td>
                                     <td>{{ grant.expiration }}</td>
                                     <td>
                                         <button
@@ -49,16 +92,15 @@
                                                 id="js-revoke-btn"
                                                 data-grantee="{{ grant.grantee }}"
                                                 data-granter="{{ grant.granter }}"
-                                                data-type="{{ grant.authorization.type }}"
-                                                data-msg="{{ grant.authorization.getMsg }}"
                                         >Revoke</button>
                                     </td>
                                 </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}

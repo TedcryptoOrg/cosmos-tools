@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Cosmos\Grants;
 
+use App\Application\UseCase\ListFeeGrants\ListFeeGrantCommand;
 use App\Application\UseCase\ListGrants\ListGrantCommand;
 use App\Controller\BaseController;
 use App\Form\Cosmos\AccountsType;
 use App\Model\Cosmos\Authz\GranterGrantsResponse;
+use App\Model\Cosmos\FeeGrant\GranterFeeGrantsResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\HandleTrait;
@@ -32,13 +34,17 @@ class ListGrantsAction extends BaseController
 
         /** @var GranterGrantsResponse|null $listGrants */
         $listGrants = null;
+        /** @var GranterFeeGrantsResponse|null $feeGrants */
+        $feeGrants = null;
         if ($form->isValid()) {
             $listGrants = $this->handle(new ListGrantCommand($form->get('address')->getData()));
+            $feeGrants = $this->handle(new ListFeeGrantCommand($form->get('address')->getData()));
         }
 
         return $this->render('cosmos/grants/index.html.twig', [
             'form' => $form->createView(),
             'listGrants' => $listGrants,
+            'feeGrants' => $feeGrants,
         ]);
     }
 }
