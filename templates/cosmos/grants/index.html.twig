@@ -21,6 +21,31 @@
                     </div>
                 </div>
             </div>
+            {% if listGrants is defined %}
+                <div class="col-sm-12">
+                    <table class="table table-striped">
+                        <thead>
+                            <th>Grantee</th>
+                            <th>Granter</th>
+                            <th>Authorization</th>
+                            <th>Expire at</th>
+                        </thead>
+                        <tbody>
+                            {% for grant in listGrants.grants %}
+                                <tr>
+                                    <td>{{ grant.grantee }}</td>
+                                    <td>{{ grant.granter }}</td>
+                                    <td>{{ grant.authorization.type }} {{ grant.authorization.msg }}</td>
+                                    <td>{{ grant.expiration }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+            <div class="col-sm-12">
+                <button class="btn btn-danger">Revoke all</button>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Service\Cosmos\Authz;
 
 use App\Model\Cosmos\Authz\GranteeGrantsResponse;
+use App\Model\Cosmos\Authz\GranterGrantsResponse;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use JMS\Serializer\Serializer;
@@ -53,7 +54,7 @@ class AuthzClient
      * @throws GuzzleException
      * @throws \JsonException
      */
-    public function getListGrantsByGranter(string $granter): GranteeGrantsResponse
+    public function getListGrantsByGranter(string $granter): GranterGrantsResponse
     {
         $url = 'cosmos/authz/v1beta1/grants/granter/'.$granter;
         $response = $this->client->request('GET', $url);
@@ -63,6 +64,6 @@ class AuthzClient
             throw new \Exception('Error while fetching grants by granter.');
         }
 
-        return $this->serializer->deserialize($response->getBody()->getContents(), GranteeGrantsResponse::class, 'json');
+        return $this->serializer->deserialize($response->getBody()->getContents(), GranterGrantsResponse::class, 'json');
     }
 }
