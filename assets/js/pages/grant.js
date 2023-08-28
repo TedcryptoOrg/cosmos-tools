@@ -59,6 +59,45 @@ function getExplorerUrl(chain, txHash) {
 }
 
 $(document).ready(function() {
+    $('#js-request-grant').click(async function (event) {
+        event.preventDefault();
+        const $this = $(this);
+        const grantee = getAddressInForm();
+        const chain = await getChainFromWallet(grantee);
+        const userWallet = await getWalletConnector(chain.chain_id).getAddress();
+        if (!await isMyWallet(grantee, chain)) {
+            alert(
+                'Wallet "%s" is not your wallet. Your wallet is "%s"'
+                    .replace('%s', grantee)
+                    .replace('%s', userWallet)
+            );
+            return;
+        }
+
+        const defaultMessage = $(this).html();
+        $(this).html('Requesting...');
+        $(this).attr('disabled', true);
+
+        // serialise form and send to different endpoint using ajax
+        $.ajax({
+            type: 'POST',
+            url: '/cosmos/grants/request',
+            data: $('#js-grant-form').serialize(),
+            success: function (data) {
+                console.log(data);
+                window.notifier.success('Request success!');
+            },
+            error: function (data) {
+                console.log(data);
+                window.notifier.alert(data.responseJSON.message);
+            },
+            complete: function () {
+                $this.html(defaultMessage);
+                $this.attr('disabled', false);
+            }
+        });
+    });
+
     $('#js-revoke-btn').click(async function (event) {
         const grantee = $(this).data('grantee');
         const granter = $(this).data('granter');

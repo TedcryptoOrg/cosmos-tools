@@ -4,7 +4,7 @@ FROM php:8-fpm-alpine
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN apk add --no-cache --virtual .persistent-deps \
-        supervisor
+        supervisor npm
 
 RUN install-php-extensions \
     intl \
@@ -12,6 +12,8 @@ RUN install-php-extensions \
     zip \
     xdebug \
     pcntl
+
+RUN npm install -g ts-node
 
 COPY --from=0 /usr/bin/composer /usr/bin/composer
 
