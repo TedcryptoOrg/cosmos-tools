@@ -7,7 +7,6 @@ use JMS\Serializer\Annotation as Serializer;
 class Authorization
 {
     /**
-     * @var string
      * @Serializer\SerializedName("@type")
      */
     public string $type;
@@ -25,26 +24,18 @@ class Authorization
      */
     public ?array $allowList = null;
 
-    /**
-     * @return string
-     */
     public function getMsg(): string
     {
-        if ($this->msg === null) {
-            switch ($this->authorizationType) {
-                case 'AUTHORIZATION_TYPE_DELEGATE':
-                    return '/cosmos.staking.v1beta1.MsgDelegate';
-                default:
-                    return $this->authorizationType;
-            }
+        if (null === $this->msg) {
+            return match ($this->authorizationType) {
+                'AUTHORIZATION_TYPE_DELEGATE' => '/cosmos.staking.v1beta1.MsgDelegate',
+                default => $this->authorizationType,
+            };
         }
 
         return $this->msg;
     }
 
-    /**
-     * @return string|null
-     */
     public function getAuthorizationType(): ?string
     {
         return $this->authorizationType;

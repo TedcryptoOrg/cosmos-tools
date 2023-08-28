@@ -17,5 +17,4 @@ class Allowance
     public ?array $spendLimit = null;
 
     public ?string $expiration = null;
-
 }

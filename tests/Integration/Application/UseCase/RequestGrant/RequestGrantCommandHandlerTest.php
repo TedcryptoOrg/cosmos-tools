@@ -20,6 +20,9 @@ class RequestGrantCommandHandlerTest extends BaseIntegrationTestCase
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testCommand()
     {
         $messageBus = $this->getMessageBus();

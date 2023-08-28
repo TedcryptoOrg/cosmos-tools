@@ -8,18 +8,15 @@ use App\Exception\FeeGrantWalletNotFound;
 use App\Service\Grant\FeeGrantWalletManager;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Process\Process;
-use TedcryptoOrg\CosmosAccounts\Exception\Bech32Exception;
-use TedcryptoOrg\CosmosAccounts\Util\Bech32;
 
 #[AsMessageHandler]
 class RequestGrantCommandHandler
 {
     public function __construct(private readonly FeeGrantWalletManager $feeGrantManager)
-    { }
+    {
+    }
 
     /**
-     * @param RequestGrantCommand $requestGrantCommand
-     *
      * @throws FeeGrantWalletNotFound
      * @throws FeeGrantNotFound
      */
@@ -30,7 +27,7 @@ class RequestGrantCommandHandler
 
         $process = Process::fromShellCommandline('ts-node scripts/grant.ts '.$requestGrantCommand->address.' "'.$mnemonic.'" '.$fee);
         $process->mustRun();
-        if ($process->isSuccessful() === false) {
+        if (!$process->isSuccessful()) {
             throw new FeeGrantCommandFailed($process->getErrorOutput());
         }
     }

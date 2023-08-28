@@ -5,10 +5,6 @@ namespace App\Tests\Integration\Service\Cosmos\Authz;
 use App\Service\Cosmos\Authz\AuthzClient;
 use App\Service\Cosmos\CosmosClientFactory;
 use App\Tests\Integration\BaseIntegrationTestCase;
-use JMS\Serializer\Serializer;
-use JMS\Serializer\SerializerInterface;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 class AuthzClientTest extends BaseIntegrationTestCase
 {
@@ -43,8 +39,8 @@ class AuthzClientTest extends BaseIntegrationTestCase
                             'type' => '/cosmos.authz.v1beta1.GenericAuthorization',
                             'msg' => '/cosmos.gov.v1beta1.MsgVote',
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'chain' => 'cosmoshub',
@@ -57,9 +53,9 @@ class AuthzClientTest extends BaseIntegrationTestCase
                             'type' => '/cosmos.authz.v1beta1.GenericAuthorization',
                             'msg' => '/cosmos.gov.v1beta1.MsgVote',
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -86,7 +82,7 @@ class AuthzClientTest extends BaseIntegrationTestCase
             [
                 'chain' => 'osmosis',
                 'wallet' => 'osmo1rd3vpw6lmvl490fkaedhrfp8ek9t7y7s5qt97t',
-                'expectedGrants' => []
+                'expectedGrants' => [],
             ],
             [
                 'chain' => 'cosmoshub',
@@ -99,9 +95,9 @@ class AuthzClientTest extends BaseIntegrationTestCase
                             'type' => '/cosmos.authz.v1beta1.GenericAuthorization',
                             'msg' => '/cosmos.gov.v1beta1.MsgVote',
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
     }
 

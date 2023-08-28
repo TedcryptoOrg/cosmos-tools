@@ -12,10 +12,11 @@ class ListGrantCommandHandler
 {
     public function __construct(
         private readonly CosmosClientFactory $cosmosClientFactory
-    ) { }
+    ) {
+    }
 
     public function __invoke(ListGrantCommand $listGrantCommand): GranterGrantsResponse
-   {
+    {
         $decoded = Bech32::decode($listGrantCommand->granter);
         $prefixToChain = [
             'cosmos' => 'cosmoshub',
@@ -24,5 +25,5 @@ class ListGrantCommandHandler
         $authzClient = $this->cosmosClientFactory->createAuthzClient($prefixToChain[$decoded[0]] ?? $decoded[0]);
 
         return $authzClient->getListGrantsByGranter($listGrantCommand->granter);
-   }
+    }
 }

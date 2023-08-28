@@ -8,6 +8,7 @@ class GranterGrantsResponse
 {
     /**
      * @var Grant[]
+     *
      * @Serializer\Type("array<App\Model\Cosmos\Authz\Grant>")
      */
     private array $grants;

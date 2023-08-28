@@ -7,7 +7,6 @@ use App\Model\Cosmos\Authz\GranterGrantsResponse;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use JMS\Serializer\Serializer;
-use JMS\Serializer\SerializerBuilder;
 use Psr\Log\LoggerInterface;
 
 class AuthzClient
