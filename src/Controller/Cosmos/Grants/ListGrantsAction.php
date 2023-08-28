@@ -40,7 +40,7 @@ class ListGrantsAction extends BaseController
         $feeGrants = null;
         /** @var GranteeFeeGrantsResponse|null $feeGrantee */
         $feeGrantee = null;
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $listGrants = $this->handle(new ListGrantCommand($form->get('address')->getData()));
             $feeGrants = $this->handle(new ListGranterFeeGrantsCommand($form->get('address')->getData()));
             $feeGrantee = $this->handle(new ListGranteeFeeGrantsCommand($form->get('address')->getData()));
