@@ -1,5 +1,7 @@
 {
     "type": "project",
+    "name": "tedcrypto/cosmos-tools",
+    "description": "Mixed cosmos tools for all cosmos validators and delegators",
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
