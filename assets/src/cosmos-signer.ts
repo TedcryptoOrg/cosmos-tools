@@ -21,14 +21,6 @@ export default class CosmosSigner {
     async sign (chainSlug: string, address:string, messages: Message[], memo?: string|undefined): Promise<DeliverTxResponse>
     {
         const client = await this.getClient(chainSlug);
-        let gasFee = 0;
-        try {
-            gasFee = await client.simulate(address, messages)
-        } catch (error) {
-            console.error(error);
-            throw new Error('Failed to simulate gas fees. Please try again.')
-        }
-
-        return client.signAndBroadcast(address, messages, gasFee, memo);
+        return client.signAndBroadcast(address, messages, memo);
     }
 }

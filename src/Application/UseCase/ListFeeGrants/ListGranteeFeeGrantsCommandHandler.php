@@ -2,28 +2,28 @@
 
 namespace App\Application\UseCase\ListFeeGrants;
 
-use App\Model\Cosmos\FeeGrant\GranterFeeGrantsResponse;
+use App\Model\Cosmos\FeeGrant\GranteeFeeGrantsResponse;
 use App\Service\Cosmos\CosmosClientFactory;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use TedcryptoOrg\CosmosAccounts\Util\Bech32;
 
 #[AsMessageHandler]
-class ListFeeGrantCommandHandler
+class ListGranteeFeeGrantsCommandHandler
 {
     public function __construct(
         private readonly CosmosClientFactory $cosmosClientFactory
     ) {
     }
 
-    public function __invoke(ListFeeGrantCommand $listGrantCommand): GranterFeeGrantsResponse
+    public function __invoke(ListGranteeFeeGrantsCommand $listGrantCommand): GranteeFeeGrantsResponse
     {
-        $decoded = Bech32::decode($listGrantCommand->granter);
+        $decoded = Bech32::decode($listGrantCommand->grantee);
         $prefixToChain = [
             'cosmos' => 'cosmoshub',
             'osmo' => 'osmosis',
         ];
         $authzClient = $this->cosmosClientFactory->createFeeGrantClient($prefixToChain[$decoded[0]] ?? $decoded[0]);
 
-        return $authzClient->getFeeGrantsByGranter($listGrantCommand->granter);
+        return $authzClient->getFeeGrantsByGrantee($listGrantCommand->grantee);
     }
 }

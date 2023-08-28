@@ -3,6 +3,7 @@ import {bech32} from "bech32";
 import {ChainDirectory} from "@tedcryptoorg/cosmos-directory";
 import CosmosSigner from "../../src/cosmos-signer";
 import {MsgRevoke} from "cosmjs-types/cosmos/authz/v1beta1/tx";
+import {Fee} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 
 let walletConnector = null;
 
@@ -101,6 +102,7 @@ $(document).ready(function() {
     $('#js-revoke-btn').click(async function (event) {
         const grantee = $(this).data('grantee');
         const granter = $(this).data('granter');
+        const payer = $(this).data('payer');
         const chain = await getChainFromWallet(granter);
         const userWallet = await getWalletConnector(chain.chain_id).getAddress();
         if (!await isMyWallet(granter, chain)) {
@@ -122,9 +124,22 @@ $(document).ready(function() {
         }
         console.log(msg);
 
-        const signer = new CosmosSigner(window.getOfflineSigner(chain.chain_id));
+        const client = await new CosmosSigner(window.getOfflineSigner(chain.chain_id)).getClient(chain.chain_name);
+        let fee = client.getFee(0)
+        if (payer) {
+            fee.granter = payer;
+        }
+        console.log('fee', fee);
+
         try {
-            const response = await signer.sign(chain.chain_name, userWallet, [msg], 'Revoked by Tedcrypto.io Tools https://tools.tedcrypto.io')
+            const response = await client.signAndBroadcast(
+                userWallet,
+                [msg],
+                'Revoked by Tedcrypto.io Tools https://tools.tedcrypto.io',
+                undefined,
+                undefined,
+                fee
+            )
             console.log(response);
             const explorerUrl = getExplorerUrl(chain, response.transactionHash);
 

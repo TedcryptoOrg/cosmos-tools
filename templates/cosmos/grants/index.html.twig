@@ -56,6 +56,7 @@
                                                     data-granter="{{ grant.granter }}"
                                                     data-type="{{ grant.authorization.type }}"
                                                     data-msg="{{ grant.authorization.getMsg }}"
+                                                    data-payer="{{ feesGrantee is defined and feesGrantee.allowances is not empty ? feesGrantee.allowances[0].granter }}"
                                             >Revoke</button>
                                         </td>
                                     </tr>
@@ -70,28 +71,42 @@
         <div class="row">
             <div class="col-sm-12">
                 <h2>Fee Grants</h2>
-
-                {% if listGrants is not empty %}
+                {% if feeGrants is not empty or feesGrantee is not empty %}
                     <div class="col-sm-12">
                         <table class="table table-striped">
                             <thead>
                             <th>Granter</th>
                             <th>Grantee</th>
-                            <th>Expire at</th>
+                            <th>Type</th>
                             <th></th>
                             </thead>
                             <tbody>
-                            {% for grant in listGrants.grants %}
+                            {% for allowance in feeGrants.allowances %}
                                 <tr>
-                                    <td>{{ grant.granter }}</td>
-                                    <td>{{ grant.grantee }}</td>
-                                    <td>{{ grant.expiration }}</td>
+                                    <td>{{ allowance.granter }}</td>
+                                    <td>{{ allowance.grantee }}</td>
+                                    <td>{{ allowance.allowance.type }}</td>
                                     <td>
                                         <button
                                                 class="btn btn-danger"
                                                 id="js-revoke-btn"
-                                                data-grantee="{{ grant.grantee }}"
-                                                data-granter="{{ grant.granter }}"
+                                                data-grantee="{{ allowance.grantee }}"
+                                                data-granter="{{ allowance.granter }}"
+                                        >Revoke</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            {% for allowance in feesGrantee.allowances %}
+                                <tr>
+                                    <td>{{ allowance.granter }}</td>
+                                    <td>{{ allowance.grantee }}</td>
+                                    <td>{{ allowance.allowance.type }}</td>
+                                    <td>
+                                        <button
+                                                class="btn btn-danger"
+                                                id="js-revoke-btn"
+                                                data-grantee="{{ allowance.grantee }}"
+                                                data-granter="{{ allowance.granter }}"
                                         >Revoke</button>
                                     </td>
                                 </tr>

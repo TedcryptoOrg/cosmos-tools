@@ -2,10 +2,10 @@
 
 namespace App\Application\UseCase\ListFeeGrants;
 
-class ListFeeGrantCommand
+class ListGranteeFeeGrantsCommand
 {
     public function __construct(
-        public string $granter,
+        public string $grantee,
     ) {
     }
 }

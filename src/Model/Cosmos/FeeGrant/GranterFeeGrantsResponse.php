@@ -11,14 +11,14 @@ class GranterFeeGrantsResponse
      *
      * @Serializer\Type("array<App\Model\Cosmos\FeeGrant\Allowances>")
      */
-    private array $grants;
+    private array $allowances;
 
     /**
      * @return array<Allowances>
      */
     public function getAllowances(): array
     {
-        return $this->grants;
+        return $this->allowances;
     }
 
     /**
@@ -26,6 +26,6 @@ class GranterFeeGrantsResponse
      */
     public function setAllowances(array $grants): void
     {
-        $this->grants = $grants;
+        $this->allowances = $grants;
     }
 }
