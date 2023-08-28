@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+    redis:
+        image: arm64v8/redis:alpine
+        volumes:
+            - redis-data:/var/lib/redis/data:rw
+        ports:
+            - "6379:6379"
+
+volumes:
+    redis-data: {}

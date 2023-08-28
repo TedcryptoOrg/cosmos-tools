@@ -1,0 +1,37 @@
+name: "Static analysis"
+
+on: [push]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  static-analysis:
+    name: "Run"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "8.2"
+          ini-values: memory_limit=-1
+
+      - name: "Composer install"
+        uses: "ramsey/composer-install@v2"
+
+      - name: "Validate Composer dependencies"
+        run: composer validate
+
+      - name: "Cache warmup (dev, test)"
+        run: bin/console cache:warmup --env=dev && bin/console cache:warmup --env=test
+
+      - name: "Run coding style"
+        run: composer code-style:check
+
+      - name: "Run PHPStan"
+        run: composer phpstan:github-action

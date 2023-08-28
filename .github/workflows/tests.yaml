@@ -1,0 +1,48 @@
+name: "Tests"
+
+on: [push]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  static-analysis:
+    name: "Run"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Docker login"
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "8.2"
+          ini-values: memory_limit=-1
+
+      - name: "Prepare ENV"
+        run: make .env
+
+      - name: "Docker compose"
+        uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: docker-compose.yaml
+
+      - name: "Composer install"
+        run: make composer-install
+
+      - name: "Validate Composer dependencies"
+        run: make php-run COMMAND="composer validate"
+
+      - name: "Cache warmup (test)"
+        run: make php-run COMMAND="bin/console cache:warmup --env=test"
+
+      - name: "Run tests"
+        run: make tests

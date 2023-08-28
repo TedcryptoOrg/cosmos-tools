@@ -1,0 +1,31 @@
+name: "Rector"
+
+on: [push]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  rector:
+    name: "Run"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "8.2"
+          ini-values: memory_limit=-1
+
+      - name: "Composer install"
+        uses: "ramsey/composer-install@v2"
+
+      - name: "Cache warmup (test)"
+        run: bin/console cache:warmup --env=test
+
+      - name: "Run Rector"
+        run: composer rector:check
