@@ -37,7 +37,7 @@ class ListGrantsAction extends BaseController
         }
 
         return $this->render('cosmos/grants/index.html.twig', [
-            'form' => $this->createForm(AccountsType::class)->createView(),
+            'form' => $form->createView(),
             'listGrants' => $listGrants,
         ]);
     }

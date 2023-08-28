@@ -27,10 +27,10 @@ class CosmosClientFactory
         return new CosmosClient($provider['address'], $provider['provider'] ?? 'Unknown', $this->createSerializer(), $this->logger);
     }
 
-    public function createAuthzClient(): AuthzClient
+    public function createAuthzClient(string $chain): AuthzClient
     {
         return new AuthzClient(
-            'https://rest.cosmos.directory/osmosis/',
+            'https://rest.cosmos.directory/'.$chain.'/',
             'cosmos-directory',
             $this->serializer,
             $this->logger

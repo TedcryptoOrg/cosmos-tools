@@ -11,7 +11,11 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        {{ form_start(form) }}
+                        {{ form_start(form, {
+                            attr: {
+                                'id': 'js-grant-form'
+                            }
+                        }) }}
                         {{ form_errors(form) }}
                         {{ form_rest(form) }}
                         <div class="form-group pull-right">
@@ -21,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            {% if listGrants is defined %}
+            {% if listGrants is not empty %}
                 <div class="col-sm-12">
                     <table class="table table-striped">
                         <thead>
@@ -29,23 +33,31 @@
                             <th>Granter</th>
                             <th>Authorization</th>
                             <th>Expire at</th>
+                            <th></th>
                         </thead>
                         <tbody>
                             {% for grant in listGrants.grants %}
                                 <tr>
                                     <td>{{ grant.grantee }}</td>
                                     <td>{{ grant.granter }}</td>
-                                    <td>{{ grant.authorization.type }} {{ grant.authorization.msg }}</td>
+                                    <td>{{ grant.authorization.type }} {{ grant.authorization.getMsg }}</td>
                                     <td>{{ grant.expiration }}</td>
+                                    <td>
+                                        <button
+                                                class="btn btn-danger"
+                                                id="js-revoke-btn"
+                                                data-grantee="{{ grant.grantee }}"
+                                                data-granter="{{ grant.granter }}"
+                                                data-type="{{ grant.authorization.type }}"
+                                                data-msg="{{ grant.authorization.getMsg }}"
+                                        >Revoke</button>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             {% endif %}
-            <div class="col-sm-12">
-                <button class="btn btn-danger">Revoke all</button>
-            </div>
         </div>
     </div>
 {% endblock %}
