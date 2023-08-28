@@ -23,7 +23,7 @@ class AccountsController extends BaseController
         $formResponse = $this->createAndHandleFormHandler($accountsFormHandler, $request);
 
         return $this->render('cosmos/accounts.html.twig', [
-            'form' => $formResponse->getForm(),
+            'form' => $formResponse->getForm()->createView(),
         ]);
     }
 

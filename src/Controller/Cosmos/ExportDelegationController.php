@@ -30,7 +30,7 @@ class ExportDelegationController extends BaseController
         }
 
         return $this->render('cosmos/export_delegations.html.twig', [
-            'form' => $formResponse->getForm(),
+            'form' => $formResponse->getForm()->createView(),
         ]);
     }
 
