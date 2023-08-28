@@ -22,6 +22,7 @@ class SlashingParameters
     public function setSignedBlocksWindow(string $signedBlocksWindow): SlashingParameters
     {
         $this->signedBlocksWindow = $signedBlocksWindow;
+
         return $this;
     }
 
@@ -33,6 +34,7 @@ class SlashingParameters
     public function setMinSignedPerWindow(string $minSignedPerWindow): SlashingParameters
     {
         $this->minSignedPerWindow = $minSignedPerWindow;
+
         return $this;
     }
 
@@ -44,6 +46,7 @@ class SlashingParameters
     public function setDowntimeJailDuration(string $downtimeJailDuration): SlashingParameters
     {
         $this->downtimeJailDuration = $downtimeJailDuration;
+
         return $this;
     }
 
@@ -55,6 +58,7 @@ class SlashingParameters
     public function setSlashFractionDoubleSign(string $slashFractionDoubleSign): SlashingParameters
     {
         $this->slashFractionDoubleSign = $slashFractionDoubleSign;
+
         return $this;
     }
 
@@ -66,6 +70,7 @@ class SlashingParameters
     public function setSlashFractionDowntime(string $slashFractionDowntime): SlashingParameters
     {
         $this->slashFractionDowntime = $slashFractionDowntime;
+
         return $this;
     }
 }

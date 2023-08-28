@@ -16,6 +16,7 @@ class ServiceServer
     public function setAddress(string $address): ServiceServer
     {
         $this->address = $address;
+
         return $this;
     }
 
@@ -27,6 +28,7 @@ class ServiceServer
     public function setProvider(?string $provider): ServiceServer
     {
         $this->provider = $provider;
+
         return $this;
     }
 }

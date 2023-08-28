@@ -4,7 +4,6 @@ namespace App\Tests\Integration\Service\Uploader;
 
 use App\Service\Uploader\TedcryptoTransfer;
 use App\Tests\Integration\BaseIntegrationTestCase;
-use PHPUnit\Framework\TestCase;
 
 class TedcryptoTransferTest extends BaseIntegrationTestCase
 {
@@ -19,7 +18,7 @@ class TedcryptoTransferTest extends BaseIntegrationTestCase
     {
         $this->assertStringContainsString(
             'tedcrypto.io',
-            $this->tedcryptoTransfer->upload(__DIR__ . '/upload_directory', 'upload_test')
+            $this->tedcryptoTransfer->upload(__DIR__.'/upload_directory', 'upload_test')
         );
     }
 }

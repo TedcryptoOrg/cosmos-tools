@@ -10,17 +10,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ExportEventSubscriber implements EventSubscriberInterface
 {
-    private LoggerInterface $logger;
-
-    private ExportDelegationsManager $exportDelegationsManager;
-
-    private ExportDelegationsMailer $exportDelegationsMailer;
-
-    public function __construct(LoggerInterface $logger, ExportDelegationsManager $exportDelegationsManager, ExportDelegationsMailer $exportDelegationsMailer)
+    public function __construct(private readonly LoggerInterface $logger, private readonly ExportDelegationsManager $exportDelegationsManager, private readonly ExportDelegationsMailer $exportDelegationsMailer)
     {
-        $this->logger = $logger;
-        $this->exportDelegationsManager = $exportDelegationsManager;
-        $this->exportDelegationsMailer = $exportDelegationsMailer;
     }
 
     public static function getSubscribedEvents(): array

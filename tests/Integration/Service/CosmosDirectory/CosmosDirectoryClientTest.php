@@ -4,7 +4,6 @@ namespace App\Tests\Integration\Service\CosmosDirectory;
 
 use App\Service\CosmosDirectory\ChainsCosmosDirectoryClient;
 use App\Tests\Integration\BaseIntegrationTestCase;
-use PHPUnit\Framework\TestCase;
 
 class CosmosDirectoryClientTest extends BaseIntegrationTestCase
 {

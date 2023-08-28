@@ -7,17 +7,8 @@ use Symfony\Component\Form\FormInterface;
 
 class FormHandlerResponse implements FormHandlerResponseInterface
 {
-    private FormInterface $form;
-
-    private bool $isSuccess;
-
-    private array $parameters;
-
-    public function __construct(FormInterface $form, bool $isSuccess, array $parameters = [])
+    public function __construct(private readonly FormInterface $form, private readonly bool $isSuccess, private array $parameters = [])
     {
-        $this->form = $form;
-        $this->isSuccess = $isSuccess;
-        $this->parameters = $parameters;
     }
 
     public function getForm(): FormInterface

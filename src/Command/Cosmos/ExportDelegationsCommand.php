@@ -19,18 +19,11 @@ use Symfony\Component\Filesystem\Filesystem;
 )]
 class ExportDelegationsCommand extends Command
 {
-    private ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient;
+    private readonly Filesystem $filesystem;
 
-    private CosmosClientFactory $cosmosClientFactory;
-
-    private Filesystem $filesystem;
-
-    public function __construct(ValidatorCosmosDirectoryClient $chainsCosmosDirectoryClient, CosmosClientFactory $cosmosClientFactory)
+    public function __construct(private readonly ValidatorCosmosDirectoryClient $validatorCosmosDirectoryClient, private readonly CosmosClientFactory $cosmosClientFactory)
     {
         parent::__construct();
-
-        $this->validatorCosmosDirectoryClient = $chainsCosmosDirectoryClient;
-        $this->cosmosClientFactory = $cosmosClientFactory;
         $this->filesystem = new Filesystem();
     }
 
@@ -68,7 +61,7 @@ class ExportDelegationsCommand extends Command
             $cosmosClient = $this->cosmosClientFactory->createClient($chain);
         }
 
-        $style->writeln('Using provider: ' . $cosmosClient->getProvider());
+        $style->writeln('Using provider: '.$cosmosClient->getProvider());
 
         foreach ($validators as $validator) {
             $style->title('Validator '.$validator['moniker'].' ('.$validator['address'].')');
@@ -78,12 +71,12 @@ class ExportDelegationsCommand extends Command
             while (true) {
                 $style->writeln('Fetching delegations... Page '.$page);
                 $delegations = $cosmosClient->getValidatorDelegations($validator['address'], $height, $limit, $offset);
-                if (\count($delegations->getDelegationResponses()) === 0) {
+                if ([] === $delegations->getDelegationResponses()) {
                     $style->writeln('No more delegations!');
                     break;
                 }
                 if ($delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress() === $lastDelegator) {
-                    $style->writeln('No more NEW delegations! Same delegator address as last page. ' . $lastDelegator);
+                    $style->writeln('No more NEW delegations! Same delegator address as last page. '.$lastDelegator);
                     break;
                 }
                 $lastDelegator = $delegations->getDelegationResponses()[0]->getDelegation()->getDelegatorAddress();
@@ -99,7 +92,7 @@ class ExportDelegationsCommand extends Command
                 }
 
                 $offset += $limit;
-                $page++;
+                ++$page;
             }
         }
 

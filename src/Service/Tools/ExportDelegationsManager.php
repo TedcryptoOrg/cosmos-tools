@@ -10,14 +10,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class ExportDelegationsManager
 {
-    private EntityManagerInterface $entityManager;
-
-    private MessageBusInterface $bus;
-
-    public function __construct(EntityManagerInterface $entityManager, MessageBusInterface $bus)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly MessageBusInterface $bus)
     {
-        $this->entityManager = $entityManager;
-        $this->bus = $bus;
     }
 
     public function find(int $id): ?ExportDelegationsRequest
@@ -80,7 +74,7 @@ class ExportDelegationsManager
 
     public function retry(ExportDelegationsRequest $exportDelegationsRequest): void
     {
-        if ($exportDelegationsRequest->getStatus() !== ExportStatusEnum::ERROR) {
+        if (ExportStatusEnum::ERROR !== $exportDelegationsRequest->getStatus()) {
             throw new \LogicException(sprintf('Cannot retry export delegations request "%s" with status: %s', $exportDelegationsRequest->getId(), $exportDelegationsRequest->getStatus()));
         }
 
@@ -91,7 +85,7 @@ class ExportDelegationsManager
         $this->entityManager->flush();
 
         foreach ($exportDelegationsRequest->getExportProcess()->getValidators() as $validator) {
-            if ($validator->getStatus() === ExportStatusEnum::DONE) {
+            if (ExportStatusEnum::DONE === $validator->getStatus()) {
                 continue;
             }
 

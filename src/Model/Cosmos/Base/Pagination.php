@@ -4,7 +4,7 @@ namespace App\Model\Cosmos\Base;
 
 class Pagination
 {
-    private ?string $nextKey;
+    private ?string $nextKey = null;
 
     private string $total;
 

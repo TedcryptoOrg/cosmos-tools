@@ -6,7 +6,6 @@ use App\Controller\BaseController;
 use App\Entity\Tools\ExportDelegationsRequest;
 use App\Enum\Export\ExportStatusEnum;
 use App\Form\Cosmos\ExportDelegationsFormHandler;
-use App\Service\Export\ExportProcessManager;
 use App\Service\Tools\ExportDelegationsManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,16 +15,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ExportDelegationController extends BaseController
 {
-    private ExportDelegationsManager $exportDelegationsManager;
-
-    public function __construct(ExportDelegationsManager $exportDelegationsManager)
+    public function __construct(private readonly ExportDelegationsManager $exportDelegationsManager)
     {
-        $this->exportDelegationsManager = $exportDelegationsManager;
     }
 
-    /**
-     * @Route("/cosmos/export-delegations", name="app_cosmos_export_delegations")
-     */
+    #[Route(path: '/cosmos/export-delegations', name: 'app_cosmos_export_delegations')]
     public function __invoke(Request $request, ExportDelegationsFormHandler $exportDelegationsFormHandler): Response
     {
         $formResponse = $this->createAndHandleFormHandler($exportDelegationsFormHandler, $request);
@@ -36,13 +30,11 @@ class ExportDelegationController extends BaseController
         }
 
         return $this->render('cosmos/export_delegations.html.twig', [
-            'form' => $formResponse->getForm()->createView(),
+            'form' => $formResponse->getForm(),
         ]);
     }
 
-    /**
-     * @Route("/cosmos/export-delegations/{token}", name="app_cosmos_export_delegations_show")
-     */
+    #[Route(path: '/cosmos/export-delegations/{token}', name: 'app_cosmos_export_delegations_show')]
     public function checkAction(ExportDelegationsRequest $exportDelegationsRequest): Response
     {
         return $this->render('cosmos/export_delegations_show.html.twig', [
@@ -50,9 +42,7 @@ class ExportDelegationController extends BaseController
         ]);
     }
 
-    /**
-     * @Route("/cosmos/export-delegations/{token}/cancel", name="app_cosmos_export_delegations_cancel")
-     */
+    #[Route(path: '/cosmos/export-delegations/{token}/cancel', name: 'app_cosmos_export_delegations_cancel')]
     public function cancelAction(ExportDelegationsRequest $exportDelegationsRequest): Response
     {
         $this->exportDelegationsManager->cancel($exportDelegationsRequest);
@@ -60,9 +50,7 @@ class ExportDelegationController extends BaseController
         return $this->redirectToRoute('app_cosmos_export_delegations_show', ['token' => $exportDelegationsRequest->getToken()]);
     }
 
-    /**
-     * @Route("/cosmos/export-delegations/{token}/retry", name="app_cosmos_export_delegations_retry")
-     */
+    #[Route(path: '/cosmos/export-delegations/{token}/retry', name: 'app_cosmos_export_delegations_retry')]
     public function retryAction(ExportDelegationsRequest $exportDelegationsRequest): Response
     {
         $this->exportDelegationsManager->retry($exportDelegationsRequest);
@@ -70,9 +58,7 @@ class ExportDelegationController extends BaseController
         return $this->redirectToRoute('app_cosmos_export_delegations_show', ['token' => $exportDelegationsRequest->getToken()]);
     }
 
-    /**
-     * @Route("/cosmos/export-delegations/{token}/download", name="app_cosmos_export_delegations_download")
-     */
+    #[Route(path: '/cosmos/export-delegations/{token}/download', name: 'app_cosmos_export_delegations_download')]
     public function downloadAction(ExportDelegationsRequest $exportDelegationsRequest): StreamedResponse
     {
         $response = new StreamedResponse();
@@ -98,24 +84,22 @@ class ExportDelegationController extends BaseController
         return $response;
     }
 
-    /**
-     * @Route("/cosmos/export-delegations/{token}/status", name="app_cosmos_export_delegations_status")
-     */
+    #[Route(path: '/cosmos/export-delegations/{token}/status', name: 'app_cosmos_export_delegations_status')]
     public function getProgressAction(ExportDelegationsRequest $exportDelegationsRequest): JsonResponse
     {
         $percentage = 100;
-        if ($exportDelegationsRequest->getStatus() === ExportStatusEnum::PROCESSING) {
+        if (ExportStatusEnum::PROCESSING === $exportDelegationsRequest->getStatus()) {
             $validators = $exportDelegationsRequest->getExportProcess()->getValidators();
             $numValidators = \count($validators);
             $completed = 0;
             foreach ($validators as $validator) {
                 if ($validator->isCompleted()) {
-                    $completed++;
+                    ++$completed;
                 }
             }
 
             $percentage = (int) round($completed / $numValidators * 100);
-            if ($percentage === 100) {
+            if (100 === $percentage) {
                 $this->exportDelegationsManager->flagAsDone($exportDelegationsRequest);
                 $status = ExportStatusEnum::DONE;
             }

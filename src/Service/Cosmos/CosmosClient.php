@@ -6,24 +6,14 @@ use App\Model\Cosmos\Staking\DelegationResponses;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use JMS\Serializer\Serializer;
-use JMS\Serializer\SerializerBuilder;
 use Psr\Log\LoggerInterface;
 
 class CosmosClient
 {
-    private string $baseUrl;
+    private readonly Client $client;
 
-    private Client $client;
-
-    private string $provider;
-
-    private Serializer $serializer;
-
-    private LoggerInterface $logger;
-
-    public function __construct(string $baseUrl, string $provider, Serializer $serializer, LoggerInterface $logger)
+    public function __construct(private readonly string $baseUrl, private readonly string $provider, private readonly Serializer $serializer, private readonly LoggerInterface $logger)
     {
-        $this->baseUrl = $baseUrl;
         $this->client = new Client(
             [
                 'base_uri' => rtrim($baseUrl, '/'),
@@ -35,9 +25,6 @@ class CosmosClient
                 'timeout' => 60,
             ]
         );
-        $this->provider = $provider;
-        $this->serializer = $serializer;
-        $this->logger = $logger;
     }
 
     public function getProvider(): string
@@ -68,7 +55,7 @@ class CosmosClient
 
         $response = $this->client->request('GET', $url, [RequestOptions::QUERY => $query, RequestOptions::HEADERS => $headers]);
 
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             $this->logger->critical($response->getBody()->getContents());
             throw new \Exception('Error while fetching delegations.');
         }
@@ -85,12 +72,12 @@ class CosmosClient
         $url = '/cosmos/base/tendermint/v1beta1/blocks/'.$height;
         $response = $this->client->request('GET', $url);
 
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             $this->logger->critical($response->getBody()->getContents());
             throw new \Exception('Error while fetching height.');
         }
 
-        $data = json_decode($response->getBody()->getContents(), true);
+        $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
         return $data['block'];
     }
@@ -100,12 +87,12 @@ class CosmosClient
         $url = '/cosmos/base/tendermint/v1beta1/blocks/latest';
         $response = $this->client->request('GET', $url);
 
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             $this->logger->critical($response->getBody()->getContents());
             throw new \Exception('Error while fetching latest height.');
         }
 
-        $data = json_decode($response->getBody()->getContents(), true);
+        $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
         return $data['block']['header']['height'];
     }
@@ -115,12 +102,12 @@ class CosmosClient
         $url = '/cosmos/base/tendermint/v1beta1/validatorsets/'.($height ?: 'latest');
         $response = $this->client->request('GET', $url);
 
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             $this->logger->critical($response->getBody()->getContents());
             throw new \Exception('Error while fetching validator set.');
         }
 
-        $data = json_decode($response->getBody()->getContents(), true);
+        $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
         return $data['validators'];
     }

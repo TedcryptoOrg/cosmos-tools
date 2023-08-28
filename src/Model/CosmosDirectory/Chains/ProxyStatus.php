@@ -16,6 +16,7 @@ class ProxyStatus
     public function setRest(bool $rest): ProxyStatus
     {
         $this->rest = $rest;
+
         return $this;
     }
 
@@ -27,6 +28,7 @@ class ProxyStatus
     public function setRpc(bool $rpc): ProxyStatus
     {
         $this->rpc = $rpc;
+
         return $this;
     }
 }

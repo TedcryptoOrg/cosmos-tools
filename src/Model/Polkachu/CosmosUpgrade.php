@@ -45,6 +45,7 @@ class CosmosUpgrade
     public function setNetwork(string $network): CosmosUpgrade
     {
         $this->network = $network;
+
         return $this;
     }
 
@@ -56,6 +57,7 @@ class CosmosUpgrade
     public function setChainName(string $chainName): CosmosUpgrade
     {
         $this->chainName = $chainName;
+
         return $this;
     }
 
@@ -67,6 +69,7 @@ class CosmosUpgrade
     public function setRepo(string $repo): CosmosUpgrade
     {
         $this->repo = $repo;
+
         return $this;
     }
 
@@ -78,6 +81,7 @@ class CosmosUpgrade
     public function setNodeVersion(string $nodeVersion): CosmosUpgrade
     {
         $this->nodeVersion = $nodeVersion;
+
         return $this;
     }
 
@@ -89,6 +93,7 @@ class CosmosUpgrade
     public function setCosmovisorFolder(string $cosmovisorFolder): CosmosUpgrade
     {
         $this->cosmovisorFolder = $cosmovisorFolder;
+
         return $this;
     }
 
@@ -100,6 +105,7 @@ class CosmosUpgrade
     public function setGitHash(string $gitHash): CosmosUpgrade
     {
         $this->gitHash = $gitHash;
+
         return $this;
     }
 
@@ -111,6 +117,7 @@ class CosmosUpgrade
     public function setProposal(string $proposal): CosmosUpgrade
     {
         $this->proposal = $proposal;
+
         return $this;
     }
 
@@ -122,6 +129,7 @@ class CosmosUpgrade
     public function setBlock(int $block): CosmosUpgrade
     {
         $this->block = $block;
+
         return $this;
     }
 
@@ -133,6 +141,7 @@ class CosmosUpgrade
     public function setBlockLink(string $blockLink): CosmosUpgrade
     {
         $this->blockLink = $blockLink;
+
         return $this;
     }
 
@@ -144,6 +153,7 @@ class CosmosUpgrade
     public function setEstimatedUpgradeTime(\DateTimeImmutable $estimatedUpgradeTime): CosmosUpgrade
     {
         $this->estimatedUpgradeTime = $estimatedUpgradeTime;
+
         return $this;
     }
 
@@ -155,6 +165,7 @@ class CosmosUpgrade
     public function setGuide(string $guide): CosmosUpgrade
     {
         $this->guide = $guide;
+
         return $this;
     }
 
@@ -166,6 +177,7 @@ class CosmosUpgrade
     public function setRpc(string $rpc): CosmosUpgrade
     {
         $this->rpc = $rpc;
+
         return $this;
     }
 
@@ -177,6 +189,7 @@ class CosmosUpgrade
     public function setAp(string $api): CosmosUpgrade
     {
         $this->api = $api;
+
         return $this;
     }
 }

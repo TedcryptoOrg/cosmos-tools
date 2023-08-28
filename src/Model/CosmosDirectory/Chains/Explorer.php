@@ -22,6 +22,7 @@ class Explorer
     public function setKind(?string $kind): Explorer
     {
         $this->kind = $kind;
+
         return $this;
     }
 
@@ -33,6 +34,7 @@ class Explorer
     public function setName(?string $name): Explorer
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -44,6 +46,7 @@ class Explorer
     public function setUrl(string $url): Explorer
     {
         $this->url = $url;
+
         return $this;
     }
 
@@ -55,6 +58,7 @@ class Explorer
     public function setTxPage(string $txPage): Explorer
     {
         $this->txPage = $txPage;
+
         return $this;
     }
 
@@ -66,6 +70,7 @@ class Explorer
     public function setAccountPage(string $accountPage): Explorer
     {
         $this->accountPage = $accountPage;
+
         return $this;
     }
 }

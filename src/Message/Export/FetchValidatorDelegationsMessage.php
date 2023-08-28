@@ -4,14 +4,8 @@ namespace App\Message\Export;
 
 class FetchValidatorDelegationsMessage
 {
-    private int $exportDelegationRequestId;
-
-    private int $exportValidatorId;
-
-    public function __construct(int $exportDelegationRequestId, int $exportValidatorId)
+    public function __construct(private readonly int $exportDelegationRequestId, private readonly int $exportValidatorId)
     {
-        $this->exportDelegationRequestId = $exportDelegationRequestId;
-        $this->exportValidatorId = $exportValidatorId;
     }
 
     public function getExportDelegationRequestId(): int

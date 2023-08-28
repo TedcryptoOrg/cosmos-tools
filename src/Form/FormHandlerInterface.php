@@ -14,19 +14,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 interface FormHandlerInterface
 {
     /**
-     * Create a form to be handled
+     * Create a form to be handled.
      *
      * @param array $options The resolved options
      */
     public function create(array $options = []): FormInterface;
 
     /**
-     * Configure the default/required options for the handler
+     * Configure the default/required options for the handler.
      */
     public function configureOptions(OptionsResolver $optionsResolver);
 
     /**
-     * Handle a form which was created by this handler
+     * Handle a form which was created by this handler.
      *
      * @param array $options Resolved options
      */

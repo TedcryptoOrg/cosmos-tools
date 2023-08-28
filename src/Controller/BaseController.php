@@ -10,11 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class BaseController extends AbstractController
 {
-
     public static function getSubscribedServices(): array
     {
         return [
-            FormHandlerManager::class
+            FormHandlerManager::class,
         ] + parent::getSubscribedServices();
     }
 

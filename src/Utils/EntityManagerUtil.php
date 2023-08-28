@@ -8,14 +8,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class EntityManagerUtil
 {
-    private ManagerRegistry $managerRegistry;
-
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(ManagerRegistry $managerRegistry, EntityManagerInterface $entityManager)
+    public function __construct(private readonly ManagerRegistry $managerRegistry, private EntityManagerInterface $entityManager)
     {
-        $this->managerRegistry = $managerRegistry;
-        $this->entityManager = $entityManager;
     }
 
     public function pingConnection(): void

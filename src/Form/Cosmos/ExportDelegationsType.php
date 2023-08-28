@@ -10,11 +10,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ExportDelegationsType extends AbstractType
 {
-    private ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient;
-
-    public function __construct(ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient)
+    public function __construct(private readonly ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient)
     {
-        $this->chainsCosmosDirectoryClient = $chainsCosmosDirectoryClient;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -61,5 +58,4 @@ class ExportDelegationsType extends AbstractType
             ])
         ;
     }
-
 }

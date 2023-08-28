@@ -14,10 +14,12 @@ class ExportProcess
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -37,7 +39,7 @@ class ExportProcess
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?\DateTime $completedAt;
+    private ?\DateTime $completedAt = null;
 
     /**
      * @ORM\Column(type="datetime")
@@ -73,6 +75,7 @@ class ExportProcess
     public function setId(?int $id): ExportProcess
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -84,6 +87,7 @@ class ExportProcess
     public function setNetwork(string $network): ExportProcess
     {
         $this->network = $network;
+
         return $this;
     }
 
@@ -95,6 +99,7 @@ class ExportProcess
     public function setHeight(string $height): ExportProcess
     {
         $this->height = $height;
+
         return $this;
     }
 
@@ -106,6 +111,7 @@ class ExportProcess
     public function setIsCompleted(bool $isCompleted): ExportProcess
     {
         $this->isCompleted = $isCompleted;
+
         return $this;
     }
 
@@ -117,6 +123,7 @@ class ExportProcess
     public function setCompletedAt(\DateTime $completedAt): ExportProcess
     {
         $this->completedAt = $completedAt;
+
         return $this;
     }
 
@@ -128,6 +135,7 @@ class ExportProcess
     public function setCreatedAt(\DateTime $createdAt): ExportProcess
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 

@@ -21,6 +21,7 @@ class Chains
     public function setRepository(Repository $repository): Chains
     {
         $this->repository = $repository;
+
         return $this;
     }
 
@@ -35,6 +36,7 @@ class Chains
     public function setChains(array $chains): Chains
     {
         $this->chains = $chains;
+
         return $this;
     }
 }

@@ -10,21 +10,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * Fetch delegations and save it into the db in a very raw and memory friendly way
+ * Fetch delegations and save it into the db in a very raw and memory friendly way.
  */
 class DelegationFetcherManager
 {
-    private EntityManagerInterface $entityManager;
-
-    private LoggerInterface $logger;
-
-    private CosmosClientFactory $cosmosClientFactory;
-
-    public function __construct(EntityManagerInterface $entityManager, CosmosClientFactory $cosmosClientFactory, LoggerInterface $logger)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly CosmosClientFactory $cosmosClientFactory, private readonly LoggerInterface $logger)
     {
-        $this->entityManager = $entityManager;
-        $this->cosmosClientFactory = $cosmosClientFactory;
-        $this->logger = $logger;
     }
 
     public function fetch(ExportDelegationsRequest $exportDelegationsRequest, Validator $validator): void
@@ -43,7 +34,7 @@ class DelegationFetcherManager
                 $limit,
                 $offset
             );
-            if (\count($delegations->getDelegationResponses()) === 0) {
+            if ([] === $delegations->getDelegationResponses()) {
                 $this->logger->info('No delegations for validator: '.$validator->getValidatorAddress());
                 break;
             }
@@ -71,7 +62,7 @@ class DelegationFetcherManager
             }
 
             $offset += $limit;
-            $page++;
+            ++$page;
         }
     }
 }

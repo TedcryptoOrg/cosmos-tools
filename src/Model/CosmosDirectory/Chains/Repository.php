@@ -20,6 +20,7 @@ class Repository
     public function setUrl(string $url): Repository
     {
         $this->url = $url;
+
         return $this;
     }
 
@@ -31,6 +32,7 @@ class Repository
     public function setBranch(string $branch): Repository
     {
         $this->branch = $branch;
+
         return $this;
     }
 
@@ -42,6 +44,7 @@ class Repository
     public function setCommit(string $commit): Repository
     {
         $this->commit = $commit;
+
         return $this;
     }
 
@@ -53,8 +56,7 @@ class Repository
     public function setTimestamp(string $timestamp): Repository
     {
         $this->timestamp = $timestamp;
+
         return $this;
     }
-
-
 }

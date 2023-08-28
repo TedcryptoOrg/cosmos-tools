@@ -14,7 +14,6 @@ class BaseIntegrationTestCase extends KernelTestCase
 
     protected function setupFixtures(): void
     {
-
     }
 
     protected function getService(string $serviceName): object

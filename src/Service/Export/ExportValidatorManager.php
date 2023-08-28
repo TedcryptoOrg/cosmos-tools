@@ -14,20 +14,8 @@ use Psr\Log\LoggerInterface;
 
 class ExportValidatorManager
 {
-    private EntityManagerInterface $entityManager;
-
-    private DelegationFetcherManager $delegationFetcherManager;
-
-    private LoggerInterface $logger;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(EntityManagerInterface $entityManager, DelegationFetcherManager $delegationFetcherManager, LoggerInterface $logger, EventDispatcherInterface $eventDispatcher)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly DelegationFetcherManager $delegationFetcherManager, private readonly LoggerInterface $logger, private readonly EventDispatcherInterface $eventDispatcher)
     {
-        $this->entityManager = $entityManager;
-        $this->delegationFetcherManager = $delegationFetcherManager;
-        $this->logger = $logger;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function find(int $validatorId): ?Validator

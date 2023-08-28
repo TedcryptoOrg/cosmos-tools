@@ -11,15 +11,12 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class ChainsCosmosDirectoryClient
 {
-    private CacheInterface $cache;
-
-    private Client $client;
+    private readonly Client $client;
 
     private ?Serializer $serializer = null;
 
-    public function __construct(CacheInterface $cache)
+    public function __construct(private readonly CacheInterface $cache)
     {
-        $this->cache = $cache;
         $this->client = new Client(
             [
                 'base_uri' => 'https://chains.cosmos.directory/',
@@ -61,7 +58,7 @@ class ChainsCosmosDirectoryClient
             $item->expiresAfter(3600); // 1 hour
 
             $data = $this->client->get('/'.$chain)->getBody()->getContents();
-            $data = json_decode($data, true);
+            $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
 
             return $data['chain'] ?? [];
         });
@@ -69,9 +66,9 @@ class ChainsCosmosDirectoryClient
 
     private function getSerialiser(): Serializer
     {
-        if (!$this->serializer) {
+        if ($this->serializer === null) {
             $this->serializer = SerializerBuilder::create()
-                //->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
+                // ->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
                 ->build();
         }
 

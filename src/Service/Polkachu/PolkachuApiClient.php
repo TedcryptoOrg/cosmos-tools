@@ -2,7 +2,6 @@
 
 namespace App\Service\Polkachu;
 
-use App\Model\CosmosDirectory\Chains\Chains;
 use App\Model\Polkachu\CosmosUpgrades;
 use GuzzleHttp\Client;
 use JMS\Serializer\Serializer;
@@ -12,15 +11,12 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class PolkachuApiClient
 {
-    private CacheInterface $cache;
-
-    private Client $client;
+    private readonly Client $client;
 
     private ?Serializer $serializer = null;
 
-    public function __construct(CacheInterface $cache)
+    public function __construct(private readonly CacheInterface $cache)
     {
-        $this->cache = $cache;
         $this->client = new Client(
             [
                 'base_uri' => 'https://polkachu.com',
@@ -47,9 +43,9 @@ class PolkachuApiClient
 
     private function getSerialiser(): Serializer
     {
-        if (!$this->serializer) {
+        if ($this->serializer === null) {
             $this->serializer = SerializerBuilder::create()
-                //->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
+                // ->setPropertyNamingStrategy(new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy()))
                 ->build();
         }
 

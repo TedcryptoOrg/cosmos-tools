@@ -7,11 +7,8 @@ use Psr\Log\LoggerInterface;
 
 class TedcryptoTransfer
 {
-    private LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private readonly LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function upload(string $directoryPath, string $filename): string
@@ -26,12 +23,12 @@ class TedcryptoTransfer
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, 'https://transfer.tedcrypto.io/');
 
-            curl_setopt($ch, CURLOPT_POST,true);
+            curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, [
                 'file' => new \CURLFile($directoryPath.$filename.'.tar.gz'),
             ]);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            //curl_setopt($ch, CURLOPT_VERBOSE, 1);
+            // curl_setopt($ch, CURLOPT_VERBOSE, 1);
 
             $downloadUrl = curl_exec($ch);
             if (200 !== curl_getinfo($ch, CURLINFO_HTTP_CODE)) {

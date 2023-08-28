@@ -2,8 +2,6 @@
 
 namespace App\Model\Cosmos\Staking;
 
-use JMS\Serializer\Annotation as Serializer;
-
 class Delegation
 {
     private string $delegatorAddress;
