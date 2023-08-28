@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 .SILENT:
-.PHONY: vendor
+.PHONY: tests
 
 ## Colors
 COLOR_RESET   = \033[0m
@@ -51,7 +51,7 @@ help:
 ## [Docker Compose] Start container(s)
 up: .env
 ifeq ($(OS_ARCH), arm)
-	docker compose -f docker-compose.yml -f docker-compose.mac.yaml up -d $(SERVICE)
+	docker compose -f docker-compose.yaml -f docker-compose.mac.yaml up -d $(SERVICE)
 else
 	docker compose up -d $(SERVICE)
 endif
