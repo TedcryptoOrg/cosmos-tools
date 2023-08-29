@@ -41,9 +41,21 @@ class ListGrantsAction extends BaseController
         /** @var GranteeFeeGrantsResponse|null $feeGrantee */
         $feeGrantee = null;
         if ($form->isSubmitted() && $form->isValid()) {
-            $listGrants = $this->handle(new ListGrantCommand($form->get('address')->getData()));
-            $feeGrants = $this->handle(new ListGranterFeeGrantsCommand($form->get('address')->getData()));
-            $feeGrantee = $this->handle(new ListGranteeFeeGrantsCommand($form->get('address')->getData()));
+            try {
+                $listGrants = $this->handle(new ListGrantCommand($form->get('address')->getData()));
+            } catch (\Exception) {
+                $listGrants = false;
+            }
+            try {
+                $feeGrants = $this->handle(new ListGranterFeeGrantsCommand($form->get('address')->getData()));
+            } catch (\Exception) {
+                $feeGrants = false;
+            }
+            try {
+                $feeGrantee = $this->handle(new ListGranteeFeeGrantsCommand($form->get('address')->getData()));
+            } catch (\Exception) {
+                $feeGrantee = false;
+            }
         }
 
         return $this->render('cosmos/grants/index.html.twig', [

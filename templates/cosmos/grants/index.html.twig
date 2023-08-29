@@ -27,10 +27,29 @@
                 </div>
             </div>
         </div>
+        {% if listGrants == false or feeGrants == false or feesGrantee %}
+            <div class="row" style="padding-top: 20px">
+                {% if listGrants == false %}
+                    <div class="alert alert-danger" role="alert">
+                        Failed to grab list grants!
+                    </div>
+                {% endif %}
+                {% if feeGrants == false %}
+                    <div class="alert alert-danger" role="alert">
+                        Failed to grab fee grants to this wallet!
+                    </div>
+                {% endif %}
+                {% if feesGrantee == false %}
+                    <div class="alert alert-danger" role="alert">
+                        Failed to grab fee grants from this wallet!
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if listGrants is not empty %}
         <div class="row" style="padding-top: 20px">
             <div class="col-sm-12">
                 <h2>Authz Grants</h2>
-            {% if listGrants is not empty %}
                 <div class="row">
                     <div class="col-sm-12">
                         <table class="table table-striped">
@@ -56,7 +75,7 @@
                                                     data-granter="{{ grant.granter }}"
                                                     data-type="{{ grant.authorization.type }}"
                                                     data-msg="{{ grant.authorization.getMsg }}"
-                                                    data-payer="{{ feesGrantee is defined and feesGrantee.allowances is not empty ? feesGrantee.allowances[0].granter }}"
+                                                    data-payer="{{ feesGrantee is not empty and feesGrantee.allowances is not empty ? feesGrantee.allowances[0].granter }}"
                                             >Revoke</button>
                                         </td>
                                     </tr>
@@ -65,13 +84,13 @@
                         </table>
                     </div>
                 </div>
-            {% endif %}
             </div>
         </div>
+        {% endif %}
+        {% if feeGrants is not empty or feesGrantee is not empty %}
         <div class="row">
             <div class="col-sm-12">
                 <h2>Fee Grants</h2>
-                {% if feeGrants is not empty or feesGrantee is not empty %}
                     <div class="col-sm-12">
                         <table class="table table-striped">
                             <thead>
@@ -114,8 +133,8 @@
                             </tbody>
                         </table>
                     </div>
-                {% endif %}
             </div>
         </div>
+        {% endif %}
     </div>
 {% endblock %}
