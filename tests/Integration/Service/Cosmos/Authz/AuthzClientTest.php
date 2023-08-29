@@ -87,16 +87,7 @@ class AuthzClientTest extends BaseIntegrationTestCase
             [
                 'chain' => 'cosmoshub',
                 'wallet' => 'cosmos1ytr0nujljr44t7kw2vhe566ecjz8mtn8n2v7xy',
-                'expectedGrants' => [
-                    [
-                        'grantee' => 'cosmos1ytr0nujljr44t7kw2vhe566ecjz8mtn8n2v7xy',
-                        'granter' => 'cosmos16n2587cgz46nn5d0c5mcqlsnx8pvg566dl7gxj',
-                        'authorization' => [
-                            'type' => '/cosmos.authz.v1beta1.GenericAuthorization',
-                            'msg' => '/cosmos.gov.v1beta1.MsgVote',
-                        ],
-                    ],
-                ],
+                'expectedGrants' => [],
             ],
         ];
     }

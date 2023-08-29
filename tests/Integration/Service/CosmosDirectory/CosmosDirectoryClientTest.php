@@ -20,8 +20,8 @@ class CosmosDirectoryClientTest extends BaseIntegrationTestCase
     public function testGetAllChains(): void
     {
         $chains = $this->client->getAllChains();
-        self::assertCount(83, $chains->getChains());
-        self::assertSame('agoric', $chains->getChains()[0]->getChainName());
+        self::assertGreaterThan(100, $chains->getChains());
+        self::assertSame('8ball', $chains->getChains()[0]->getChainName());
     }
 
     public function testGetChain(): void

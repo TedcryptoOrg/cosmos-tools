@@ -4,7 +4,7 @@ namespace App\Controller\Cosmos\Grants;
 
 use App\Application\UseCase\RequestGrant\RequestGrantCommand;
 use App\Controller\BaseController;
-use App\Exception\FeeGrantCommandFailed;
+use App\Exception\RequestFeeGrantCommandFailed;
 use App\Exception\FeeGrantNotFound;
 use App\Exception\FeeGrantWalletNotFound;
 use App\Form\Cosmos\AccountsType;
@@ -47,7 +47,7 @@ class RequestFeeGrantAction extends BaseController
                         'message' => 'No fee grant available for this blockchain. Please contact us to set it up',
                     ], 404);
                 }
-                if ($previous instanceof FeeGrantCommandFailed) {
+                if ($previous instanceof RequestFeeGrantCommandFailed) {
                     return new JsonResponse([
                         'success' => false,
                         'message' => 'Grant command failed to run. Please contact us for more details.',
