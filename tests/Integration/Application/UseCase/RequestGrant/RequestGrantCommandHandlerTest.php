@@ -12,7 +12,7 @@ class RequestGrantCommandHandlerTest extends BaseIntegrationTestCase
 {
     protected function setUp(): void
     {
-        $this->markTestSkipped('Need to revoke fee grants and rethink the logic');
+        self::markTestSkipped('Need to revoke fee grants and rethink the logic');
         $feeGrantWallet = new FeeGrantWallet();
         $feeGrantWallet
             ->setAddress('cosmos1')

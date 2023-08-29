@@ -2,9 +2,9 @@
 
 namespace App\Application\UseCase\RequestGrant;
 
-use App\Exception\RequestFeeGrantCommandFailed;
 use App\Exception\FeeGrantNotFound;
 use App\Exception\FeeGrantWalletNotFound;
+use App\Exception\RequestFeeGrantCommandFailed;
 use App\Service\Grant\FeeGrantWalletManager;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Process\Exception\ProcessFailedException;

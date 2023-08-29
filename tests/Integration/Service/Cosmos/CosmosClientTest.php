@@ -9,7 +9,7 @@ class CosmosClientTest extends BaseIntegrationTestCase
 {
     public function testGetDelegations(): void
     {
-        $this->markTestSkipped('Problems with performance with public endpoints');
+        self::markTestSkipped('Problems with performance with public endpoints');
         /** @var CosmosClientFactory $cosmosClientFactory */
         $cosmosClientFactory = $this->getService(CosmosClientFactory::class);
         $client = $cosmosClientFactory->createClient('osmosis');

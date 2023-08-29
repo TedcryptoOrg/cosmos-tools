@@ -4,9 +4,9 @@ namespace App\Controller\Cosmos\Grants;
 
 use App\Application\UseCase\RequestGrant\RequestGrantCommand;
 use App\Controller\BaseController;
-use App\Exception\RequestFeeGrantCommandFailed;
 use App\Exception\FeeGrantNotFound;
 use App\Exception\FeeGrantWalletNotFound;
+use App\Exception\RequestFeeGrantCommandFailed;
 use App\Form\Cosmos\AccountsType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
