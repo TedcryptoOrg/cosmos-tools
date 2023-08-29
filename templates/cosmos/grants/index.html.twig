@@ -27,19 +27,19 @@
                 </div>
             </div>
         </div>
-        {% if listGrants == false or feeGrants == false or feesGrantee %}
+        {% if listGrants is same as (false) or feeGrants is same as (false) or feesGrantee is same as (false) %}
             <div class="row" style="padding-top: 20px">
-                {% if listGrants == false %}
+                {% if listGrants is same as (false) %}
                     <div class="alert alert-danger" role="alert">
                         Failed to grab list grants!
                     </div>
                 {% endif %}
-                {% if feeGrants == false %}
+                {% if feeGrants is same as (false) %}
                     <div class="alert alert-danger" role="alert">
                         Failed to grab fee grants to this wallet!
                     </div>
                 {% endif %}
-                {% if feesGrantee == false %}
+                {% if feesGrantee is same as (false) %}
                     <div class="alert alert-danger" role="alert">
                         Failed to grab fee grants from this wallet!
                     </div>
