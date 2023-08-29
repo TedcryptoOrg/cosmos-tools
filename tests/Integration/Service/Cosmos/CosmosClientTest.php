@@ -9,11 +9,12 @@ class CosmosClientTest extends BaseIntegrationTestCase
 {
     public function testGetDelegations(): void
     {
+        self::markTestSkipped('Problems with performance with public endpoints');
         /** @var CosmosClientFactory $cosmosClientFactory */
         $cosmosClientFactory = $this->getService(CosmosClientFactory::class);
-        $client = $cosmosClientFactory->createClient('secretnetwork');
+        $client = $cosmosClientFactory->createClient('osmosis');
 
-        $delegations = $client->getValidatorDelegations('secretvaloper10wxn2lv29yqnw2uf4jf439kwy5ef00qdrjxpjn', '1');
+        $delegations = $client->getValidatorDelegations('osmovaloper1xk23a255qm4kn6gdezr6jm7zmupn23t3pqjjn6', '11211113');
         self::assertCount(1, $delegations->getDelegationResponses());
     }
 }
