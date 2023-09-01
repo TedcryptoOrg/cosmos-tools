@@ -57,7 +57,7 @@ class CosmosClient
 
         if (200 !== $response->getStatusCode()) {
             $this->logger->critical($response->getBody()->getContents());
-            throw new \Exception('Error while fetching delegations.');
+            throw new \Exception('Error while fetching delegations. HTTP code: '.$response->getStatusCode());
         }
 
         return $this->serializer->deserialize(

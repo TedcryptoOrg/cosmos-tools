@@ -9,6 +9,9 @@
 import './styles/global.scss';
 import './styles/app.css';
 
+import 'awesome-notifications/dist/style.css';
+
+import './js/global';
 
 // start the Stimulus application
 import './bootstrap';
@@ -18,5 +21,6 @@ import './src/cosmos-signer'
 // Other js
 import './js/app.js';
 import './js/pages/signer.js';
+import './js/pages/grant.js';
 
 

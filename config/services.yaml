@@ -22,7 +22,8 @@ services:
             - '../src/Model/'
             - '../src/Event/'
             - '../src/Message/'
-            - '../src/Service/Cosmos/CosmosClient.php'
+            - '../src/Application/**/*Command.php'
+            - '../src/Service/Cosmos/**/*Client.php'
         public: true
 
     # add more service definitions when explicit configuration is needed

@@ -7,6 +7,7 @@ namespace App\Tests\Integration;
 use Doctrine\ORM\EntityManagerInterface;
 use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class BaseIntegrationTestCase extends KernelTestCase
 {
@@ -22,6 +23,14 @@ class BaseIntegrationTestCase extends KernelTestCase
         \assert(null !== $service);
 
         return $service;
+    }
+
+    protected function getMessageBus(): MessageBusInterface
+    {
+        /** @var MessageBusInterface $messageBus */
+        $messageBus = $this->getService(MessageBusInterface::class);
+
+        return $messageBus;
     }
 
     protected function getEntityManager(): EntityManagerInterface
