@@ -30,7 +30,7 @@ class UpgradesController extends BaseController
         $formResponse = $this->createAndHandleFormHandler($signerFormHandler, $request);
 
         return $this->render('cosmos/upgrades/index.html.twig', [
-            'form' => $formResponse->getForm()->createView(),
+            'form' => $formResponse->getForm(),
         ]);
     }
 

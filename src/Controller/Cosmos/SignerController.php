@@ -18,7 +18,7 @@ class SignerController extends BaseController
         $formResponse = $this->createAndHandleFormHandler($signerFormHandler, $request);
 
         return $this->render('cosmos/signer.html.twig', [
-            'form' => $formResponse->getForm()->createView(),
+            'form' => $formResponse->getForm(),
         ]);
     }
 }
