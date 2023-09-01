@@ -3,7 +3,7 @@ import {bech32} from "bech32";
 import {ChainDirectory} from "@tedcryptoorg/cosmos-directory";
 import CosmosSigner from "../../src/cosmos-signer";
 import {MsgRevoke} from "cosmjs-types/cosmos/authz/v1beta1/tx";
-import {Fee} from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import {Chain} from "@tedcryptoorg/cosmos-directory";
 
 let walletConnector = null;
 
@@ -21,6 +21,15 @@ function getWalletConnector(chainId) {
 
 function getAddressInForm() {
     return $('#js-grant-form').find('input').val();
+}
+
+/**
+ * @param {string} chain
+ *
+ * @returns {Promise<Chain>}
+ */
+async function getChain(chain) {
+    return (await (new ChainDirectory().getChainData(chain))).chain;
 }
 
 async function getChainFromWallet(wallet) {
@@ -98,6 +107,23 @@ $(document).ready(function() {
             }
         });
     });
+
+    $('#js-my-wallet li a').click(async function (event) {
+        event.preventDefault();
+        const chainName = $(this).data('value');
+        const chain = await getChain(chainName);
+        let userWallet = null;
+        try {
+            userWallet = await getWalletConnector(chain.chain_id).getAddress();
+        } catch (error) {
+            window.notifier.alert(error.message);
+            return;
+        }
+
+        const $form = $('#js-grant-form');
+        $form.find('input').val(userWallet);
+        $form.submit();
+    })
 
     $('#js-revoke-btn').click(async function (event) {
         const grantee = $(this).data('grantee');

@@ -28,7 +28,7 @@ class Chains
     }
 
     /**
-     * @return Chain[]
+     * @return array<Chain>
      */
     public function getChains(): array
     {

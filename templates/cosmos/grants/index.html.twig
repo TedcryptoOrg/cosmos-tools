@@ -7,6 +7,8 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <h2>Cosmos Grants</h2>
+                        <p>List all the grants which a wallet has received and granted and revoke them.</p>
+                        <p>This will also show fees that have been given and granted</p>
                     </div>
                 </div>
                 <div class="row">
@@ -17,17 +19,31 @@
                             }
                         }) }}
                         {{ form_errors(form) }}
+                        <div class="input-group mb-3">
+                            <label for="{{ form.address.vars.id }}" class="input-group-text">Address</label>
+                            {{ form_widget(form.address, {attr: {
+                                'placeholder': 'cosmos1...',
+                            }}) }}
+                            <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">My Wallet</button>
+                            <ul class="dropdown-menu" id="js-my-wallet">
+                                {% for chain in chains.chains %}
+                                    <li><a class="dropdown-item" href="#" data-value="{{ chain.name }}">{{ chain.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                         {{ form_rest(form) }}
                         <div class="form-group pull-right">
-                            <button type="submit" class="btn btn-primary">List grants</button>
-                            <button type="submit" class="btn btn-success" id="js-request-grant">Request revoke fee grant</button>
+                            <button type="submit" class="btn btn-primary" id="js-list-grants">List grants</button>
+                            {% if isSubmitted %}
+                                <button type="submit" class="btn btn-success" id="js-request-grant">Request revoke fee grant</button>
+                            {% endif %}
                         </div>
                         {{ form_end(form) }}
                     </div>
                 </div>
             </div>
         </div>
-        {% if listGrants is same as (false) or feeGrants is same as (false) or feesGrantee is same as (false) %}
+        {% if isSubmitted %}
             <div class="row" style="padding-top: 20px">
                 {% if listGrants is same as (false) %}
                     <div class="alert alert-danger" role="alert">
@@ -97,7 +113,6 @@
                             <th>Granter</th>
                             <th>Grantee</th>
                             <th>Type</th>
-                            <th></th>
                             </thead>
                             <tbody>
                             {% for allowance in feeGrants.allowances %}
@@ -105,14 +120,6 @@
                                     <td>{{ allowance.granter }}</td>
                                     <td>{{ allowance.grantee }}</td>
                                     <td>{{ allowance.allowance.type }}</td>
-                                    <td>
-                                        <button
-                                                class="btn btn-danger"
-                                                id="js-revoke-btn"
-                                                data-grantee="{{ allowance.grantee }}"
-                                                data-granter="{{ allowance.granter }}"
-                                        >Revoke</button>
-                                    </td>
                                 </tr>
                             {% endfor %}
                             {% for allowance in feesGrantee.allowances %}
@@ -120,14 +127,6 @@
                                     <td>{{ allowance.granter }}</td>
                                     <td>{{ allowance.grantee }}</td>
                                     <td>{{ allowance.allowance.type }}</td>
-                                    <td>
-                                        <button
-                                                class="btn btn-danger"
-                                                id="js-revoke-btn"
-                                                data-grantee="{{ allowance.grantee }}"
-                                                data-granter="{{ allowance.granter }}"
-                                        >Revoke</button>
-                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>
