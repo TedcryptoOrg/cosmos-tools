@@ -10150,7 +10150,6 @@
         },
         {
             "name": "php-cs-fixer/shim",
-<<<<<<< HEAD
             "version": "v3.25.0",
             "source": {
                 "type": "git",
@@ -10161,18 +10160,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/PHP-CS-Fixer/shim/zipball/adbfae082f13791980d35251048ada7644eecd08",
                 "reference": "adbfae082f13791980d35251048ada7644eecd08",
-=======
-            "version": "v3.24.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PHP-CS-Fixer/shim.git",
-                "reference": "ce695745169124967e18392b7324c80d59251ac1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/shim/zipball/ce695745169124967e18392b7324c80d59251ac1",
-                "reference": "ce695745169124967e18392b7324c80d59251ac1",
->>>>>>> main
                 "shasum": ""
             },
             "require": {
@@ -10209,15 +10196,9 @@
             "description": "A tool to automatically fix PHP code style",
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/shim/issues",
-<<<<<<< HEAD
                 "source": "https://github.com/PHP-CS-Fixer/shim/tree/v3.25.0"
             },
             "time": "2023-08-31T21:28:19+00:00"
-=======
-                "source": "https://github.com/PHP-CS-Fixer/shim/tree/v3.24.0"
-            },
-            "time": "2023-08-29T23:24:57+00:00"
->>>>>>> main
         },
         {
             "name": "phpstan/phpstan",
