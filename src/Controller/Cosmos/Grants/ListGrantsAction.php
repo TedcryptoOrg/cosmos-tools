@@ -12,6 +12,7 @@ use App\Form\Cosmos\AccountsType;
 use App\Model\Cosmos\Authz\GranterGrantsResponse;
 use App\Model\Cosmos\FeeGrant\GranteeFeeGrantsResponse;
 use App\Model\Cosmos\FeeGrant\GranterFeeGrantsResponse;
+use App\Service\CosmosDirectory\ChainsCosmosDirectoryClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\HandleTrait;
@@ -23,6 +24,7 @@ class ListGrantsAction extends BaseController
     use HandleTrait;
 
     public function __construct(
+        private readonly ChainsCosmosDirectoryClient $chainsCosmosDirectoryClient,
         MessageBusInterface $messageBus
     ) {
         $this->messageBus = $messageBus;
@@ -63,6 +65,8 @@ class ListGrantsAction extends BaseController
             'listGrants' => $listGrants,
             'feeGrants' => $feeGrants,
             'feesGrantee' => $feeGrantee,
+            'isSubmitted' => $form->isSubmitted() && $form->isValid(),
+            'chains' => $this->chainsCosmosDirectoryClient->getAllChains(),
         ]);
     }
 }
