@@ -7,7 +7,7 @@ use App\Tests\Integration\BaseIntegrationTestCase;
 
 class CosmosClientTest extends BaseIntegrationTestCase
 {
-    public function testGetDelegations(): void
+    public function testGetDelegations(): never
     {
         self::markTestSkipped('Problems with performance with public endpoints');
         /** @var CosmosClientFactory $cosmosClientFactory */
