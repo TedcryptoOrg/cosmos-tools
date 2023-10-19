@@ -43,7 +43,7 @@ services:
       - "3306:3306"
 
   redis:
-    image: redis:7.2.1
+    image: redis:7.2.2
     volumes:
       - redis-data:/var/lib/redis/data:rw
     ports:
