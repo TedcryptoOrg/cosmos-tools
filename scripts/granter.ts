@@ -38,7 +38,7 @@ export class Granter {
                 }
             ],
             expiration: {
-                seconds: new Date().getTime() + 1000 * 60 * 60 * 24 * 365
+                seconds: BigInt(new Date().getTime() + 1000 * 60 * 60 * 24 * 365)
             },
         })
 
