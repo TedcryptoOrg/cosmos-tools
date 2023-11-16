@@ -31,7 +31,7 @@ services:
       - ./public:/srv/public:ro
 
   db:
-    image: mariadb:11.1.2
+    image: mariadb:11.1.3
     environment:
       MARIADB_ROOT_PASSWORD: 'root'
       MARIADB_DATABASE: 'cosmostools'
