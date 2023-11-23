@@ -9628,16 +9628,16 @@
         },
         {
             "name": "hautelook/alice-bundle",
-            "version": "2.12.1",
+            "version": "2.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/AliceBundle.git",
-                "reference": "841ac01d0d4e1ea3381374360cdcc5d6b9c904cc"
+                "reference": "76485f14618725c3555e3c2737c68088d06104fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/AliceBundle/zipball/841ac01d0d4e1ea3381374360cdcc5d6b9c904cc",
-                "reference": "841ac01d0d4e1ea3381374360cdcc5d6b9c904cc",
+                "url": "https://api.github.com/repos/theofidry/AliceBundle/zipball/76485f14618725c3555e3c2737c68088d06104fb",
+                "reference": "76485f14618725c3555e3c2737c68088d06104fb",
                 "shasum": ""
             },
             "require": {
@@ -9695,9 +9695,9 @@
             ],
             "support": {
                 "issues": "https://github.com/theofidry/AliceBundle/issues",
-                "source": "https://github.com/theofidry/AliceBundle/tree/2.12.1"
+                "source": "https://github.com/theofidry/AliceBundle/tree/2.12.2"
             },
-            "time": "2023-09-19T19:48:05+00:00"
+            "time": "2023-11-22T23:06:15+00:00"
         },
         {
             "name": "jangregor/phpstan-prophecy",
