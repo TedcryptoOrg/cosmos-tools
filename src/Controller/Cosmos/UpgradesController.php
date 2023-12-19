@@ -12,6 +12,7 @@ use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\Entity\Event;
 use Eluceo\iCal\Domain\ValueObject\DateTime;
 use Eluceo\iCal\Domain\ValueObject\TimeSpan;
+use Eluceo\iCal\Domain\ValueObject\UniqueIdentifier;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,7 +65,9 @@ class UpgradesController extends BaseController
                 '<br>Version: '.$upgrade->version.
                 '<br>Estimated upgrade time: '.$upgrade->estimatedUpgradeTime->format('Y-m-d H:i:s').
                 '<br>Block: '.$upgrade->upgradeBlockHeight;
-            $event = new Event();
+            $event = new Event(
+                new UniqueIdentifier(md5($upgrade->chainName.$upgrade->version))
+            );
             $event
                 ->setSummary('Upgrade '.$upgrade->chainName.' to '.$upgrade->version)
                 ->setOccurrence($timeSpan)
@@ -76,6 +79,7 @@ class UpgradesController extends BaseController
         if ($request->query->has('view')) {
             return $this->json(\array_map(
                 fn (Event $event) => [
+                    'id' => (string) $event->getUniqueIdentifier(),
                     'title' => $event->getSummary(),
                     'start' => $event->getOccurrence()->getBegin(),
                     'end' => $event->getOccurrence()->getEnd(),
@@ -122,7 +126,9 @@ class UpgradesController extends BaseController
                 '<br>Block link: '.$upgrade->getBlockLink().
                 '<br>Guide: '.$upgrade->getGuide().
                 '<br>Cosmo Visor Folder: '.$upgrade->getCosmoVisorFolder();
-            $event = new Event();
+            $event = new Event(
+                new UniqueIdentifier(md5($upgrade->getChainName().$upgrade->getNodeVersion()))
+            );
             $event
                 ->setSummary('Upgrade '.$upgrade->getChainName().' to '.$upgrade->getNodeVersion())
                 ->setOccurrence($timeSpan)
@@ -134,6 +140,7 @@ class UpgradesController extends BaseController
         if ($request->query->has('view')) {
             return $this->json(\array_map(
                 fn (Event $event) => [
+                    'id' => (string) $event->getUniqueIdentifier(),
                     'title' => $event->getSummary(),
                     'start' => $event->getOccurrence()->getBegin(),
                     'end' => $event->getOccurrence()->getEnd(),
