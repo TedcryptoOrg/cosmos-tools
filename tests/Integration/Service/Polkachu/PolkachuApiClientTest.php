@@ -4,7 +4,6 @@ namespace App\Tests\Integration\Service\Polkachu;
 
 use App\Service\Polkachu\PolkachuApiClient;
 use App\Tests\Integration\BaseIntegrationTestCase;
-use PHPUnit\Framework\TestCase;
 
 class PolkachuApiClientTest extends BaseIntegrationTestCase
 {
