@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Integration\Service\UpgradeWatcher\Adapter\DefiantLabs;
+namespace App\Tests\Integration\Infrastructure\UpgradeWatcher\Adapter\DefiantLabs;
 
 use App\Infrastructure\UpgradeWatcher\Adapter\DefiantLabs\UpgradeApiClient;
 use App\Tests\Integration\BaseIntegrationTestCase;
