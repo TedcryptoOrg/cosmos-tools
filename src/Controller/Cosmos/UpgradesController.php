@@ -45,7 +45,7 @@ class UpgradesController extends BaseController
         return $this->polkachuIcalAction($request);
     }
 
-    #[Route(path: '/cosmos/defiantlab/upgrades/ical.ics', name: 'app_defiantlab_cosmos_upgrades_ical')]
+    #[Route(path: '/cosmos/defiantlabs/upgrades/ical.ics', name: 'app_defiantlabs_cosmos_upgrades_ical')]
     public function defiantLabIcalAction(Request $request): Response
     {
         $upgrades = $this->upgradeWatcher->getUpgrades();
