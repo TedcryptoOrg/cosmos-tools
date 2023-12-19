@@ -35,7 +35,7 @@ class PolkachuApiClient
         return $this->cache->get('polkachu.cosmos_upgrades', function (ItemInterface $item) {
             $item->expiresAfter(3600); // 1 hour
 
-            $data = $this->client->get('/api/v1/chain_upgrades')->getBody()->getContents();
+            $data = $this->client->get('/api/v2/chain_upgrades')->getBody()->getContents();
 
             return $this->getSerialiser()->deserialize($data, CosmosUpgrades::class, 'json');
         });
