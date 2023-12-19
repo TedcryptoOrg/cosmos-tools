@@ -10,7 +10,6 @@ use App\Model\UpgradeWatcher\UpgradeWatcher;
 use App\Service\Polkachu\PolkachuApiClient;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\Entity\Event;
-use Eluceo\iCal\Domain\Entity\TimeZone;
 use Eluceo\iCal\Domain\ValueObject\DateTime;
 use Eluceo\iCal\Domain\ValueObject\TimeSpan;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
@@ -57,8 +56,8 @@ class UpgradesController extends BaseController
             }
 
             $timeSpan = new TimeSpan(
-                new DateTime($upgrade->estimatedUpgradeTime, false),
-                new DateTime($upgrade->estimatedUpgradeTime->modify('+10 minutes'), false)
+                new DateTime($upgrade->estimatedUpgradeTime, true),
+                new DateTime($upgrade->estimatedUpgradeTime->modify('+10 minutes'), true)
             );
             $description = 'Network: '.$upgrade->network.
                 '<br>Chain: '.$upgrade->chainName.
@@ -87,7 +86,6 @@ class UpgradesController extends BaseController
         }
 
         $calendar = new Calendar($events);
-        $calendar->addTimeZone(TimeZone::createFromPhpDateTimeZone(new \DateTimeZone('UTC')));
 
         $componentFactory = new CalendarFactory();
         $calendarComponent = $componentFactory->createCalendar($calendar);
@@ -111,8 +109,8 @@ class UpgradesController extends BaseController
             }
 
             $timeSpan = new TimeSpan(
-                new DateTime($upgrade->getEstimatedUpgradeTime(), false),
-                new DateTime($upgrade->getEstimatedUpgradeTime()->modify('+10 minutes'), false)
+                new DateTime($upgrade->getEstimatedUpgradeTime(), true),
+                new DateTime($upgrade->getEstimatedUpgradeTime()->modify('+10 minutes'), true)
             );
             $description = 'Network: '.$upgrade->getNetwork().
                 '<br>Chain: '.$upgrade->getChainName().
@@ -146,7 +144,6 @@ class UpgradesController extends BaseController
         }
 
         $calendar = new Calendar($events);
-        $calendar->addTimeZone(TimeZone::createFromPhpDateTimeZone(new \DateTimeZone('UTC')));
 
         $componentFactory = new CalendarFactory();
         $calendarComponent = $componentFactory->createCalendar($calendar);
