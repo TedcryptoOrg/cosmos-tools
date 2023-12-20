@@ -11,17 +11,40 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        This is an Ical for Cosmos upgrades. The Ical is generated from the Polkachu (https://polkachu.com/) awesome API!<br/>
-                        <br/>
+                        <p>
+                            This is an Ical for Cosmos upgrades. Ical is powered by APIs from other people in the ecosystem.<br/>
+                            Currently, we support:<br/>
+                            - Polkachu<br/>
+                            - DefiantLabs<br/>
+                        </p>
+                        <p>
+                            <b>Note:</b> Right now our generic .ical only offers data from Polkachu because it has been more stable.
+                        </p>
+                        <h3>How to use?</h3>
+                        <p>
+                            Just copy the link below, go to your google calendar or any other calendar.
+                            Click on add a new ICAL and add the link above.
+                        </p>
                         <code>{{ absolute_url(path('app_cosmos_upgrades_ical')) }}</code>
                         <br/><br/>
-                        <h3>How to use?</h3>
-                        <p>Just copy the link above, go to your google calendar our any other calender. Click on add a new ICAL and add the link above.</p>
-                        <br>
+                        <p>
+                            Or use the direct provider Ical:<br/><br/>
+                            <code>{{ absolute_url(path('app_polkachu_cosmos_upgrades_ical')) }}</code><br/>
+                            <code>{{ absolute_url(path('app_defiantlabs_cosmos_upgrades_ical')) }}</code><br/>
+                        </p>
                         <h3>Customisations</h3>
                         <h4>Chains</h4>
                         <p>You pick only the chains you want to be notified. For this add to the link above the following query parameter `chains[]=name` for example:</p>
                         <code>{{ absolute_url(path('app_cosmos_upgrades_ical', {chains: ['evmos', 'juno', 'stargaze']})) }}</code>
+                        <br/><br/>
+                        <h3>Technical details</h3>
+                        <p>
+                            - The ical is generated on the fly, so it is always up to date.<br/>
+                            - We cache the data from API for 1 hour to avoid spamming it.<br/>
+                            - The events have TZ UTC<br/>
+                            - No additional TZ is set to the calendar<br/>
+                            - Each event has a unique ID so it can be updated in the calendar<br/>
+                        </p>
                     </div>
                 </div>
             </div>
