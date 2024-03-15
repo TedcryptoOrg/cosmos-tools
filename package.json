@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "@tedcryptoorg/cosmos-directory": "^0.1.1",
-        "@tedcryptoorg/cosmos-signer": "^0.0.8",
+        "@tedcryptoorg/cosmos-signer": "^1.0.0",
         "@tedcryptoorg/cosmos-wallet-wires": "^0.0.3",
         "awesome-notifications": "^3.1.3",
         "bech32": "^2.0.0",
